@@ -44,11 +44,21 @@
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+        
+        /* Standaard verbergen we de app tot betaling is bevestigd */
+        #app-container { display: none; }
     </style>
 </head>
 <body class="flex flex-col md:flex-row h-screen overflow-hidden">
 
-    <!-- LANDING / BETAAL PAYWALL PAGINA (Standaard altijds zichtbaar tenzij betaald) -->
+    <!-- SCRIPT OM DIRECT TE CONTROLEREN VOOR HET RENDEN -->
+    <script>
+        if (localStorage.getItem('LIFE_USER_PAID') === 'true') {
+            document.write('<style>#landing-screen { display: none !important; } #app-container { display: flex !important; }</style>');
+        }
+    </script>
+
+    <!-- LANDING / BETAAL PAYWALL PAGINA -->
     <div id="landing-screen" class="fixed inset-0 bg-[#f9fafb] z-50 overflow-y-auto flex items-center justify-center p-4">
         <div class="max-w-[750px] w-full bg-white border border-gray-200 rounded-2xl p-6 sm:p-12 card-shadow my-auto">
             <div class="text-center mb-8 sm:mb-10">
@@ -89,13 +99,11 @@
             </div>
 
             <div class="text-center">
-                <!-- Jouw actieve Stripe Betaallink -->
                 <a href="https://buy.stripe.com/8x2dRa0kU9t506Fcebgfu00" target="_blank" onclick="simulateSuccessfulPayment()" class="block sm:inline-block w-full sm:w-auto bg-black text-white px-8 py-4 rounded-xl font-semibold text-sm sm:text-base hover:bg-gray-800 transition shadow-md text-center">
                     Krijg direct toegang tot LIFE Assistent
                 </a>
                 <p class="text-[11px] sm:text-xs text-gray-400 mt-3">Flexibel. Je kan altijd opzeggen waar en wanneer je wil.</p>
                 
-                <!-- Testknop -->
                 <div class="mt-5">
                     <button onclick="bypassPaywallForTesting()" class="text-xs text-gray-400 underline hover:text-gray-600">Al betaald? Test app weergave</button>
                 </div>
@@ -103,310 +111,313 @@
         </div>
     </div>
 
-    <!-- PC SIDEBAR -->
-    <aside class="w-64 bg-white border-r border-app-border hidden md:flex flex-col justify-between shrink-0 z-20">
-        <div>
-            <div class="p-5 border-b border-app-border flex items-center justify-between">
-                <span class="text-xl font-bold tracking-tight text-app-text">LIFE<span class="text-app-primary">.</span></span>
-                <span class="text-xs font-medium px-2 py-0.5 bg-blue-50 text-app-primary rounded-full">Pro</span>
-            </div>
-
-            <nav class="p-3 space-y-1" id="main-nav-pc">
-                <button onclick="switchTab('vandaag')" id="nav-pc-vandaag" class="w-full flex items-center space-x-3 px-3 py-2.5 bg-app-primary text-white font-medium rounded-xl transition text-left text-sm">
-                    <i class="fa-solid fa-sun w-5"></i><span>Vandaag</span>
-                </button>
-                <button onclick="switchTab('taken')" id="nav-pc-taken" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
-                    <i class="fa-solid fa-calendar-week w-5"></i><span>Agenda & Taken</span>
-                </button>
-                <button onclick="switchTab('gewoonte')" id="nav-pc-gewoonte" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
-                    <i class="fa-solid fa-chart-line w-5"></i><span>Gewoontes & Doelen</span>
-                </button>
-                <button onclick="switchTab('boodschappen')" id="nav-pc-boodschappen" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
-                    <i class="fa-solid fa-cart-shopping w-5"></i><span>Boodschappen & Lijsten</span>
-                </button>
-                <button onclick="switchTab('financien')" id="nav-pc-financien" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
-                    <i class="fa-solid fa-wallet w-5"></i><span>Geld & Budget</span>
-                </button>
-                <button onclick="switchTab('documenten')" id="nav-pc-documenten" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
-                    <i class="fa-solid fa-folder-closed w-5"></i><span>Mappen & Papieren</span>
-                </button>
-            </nav>
-        </div>
-
-        <div class="p-3 border-t border-app-border space-y-2">
-            <div class="flex items-center justify-between text-[11px] text-app-muted px-2 pt-1">
-                <button onclick="exportBackup()" class="hover:text-app-primary"><i class="fa-solid fa-download mr-1"></i>Backup</button>
-                <button onclick="importBackupPrompt()" class="hover:text-app-primary"><i class="fa-solid fa-upload mr-1"></i>Herstel</button>
-                <button onclick="lockAppAgain()" class="text-app-danger hover:underline">Vergrendel</button>
-            </div>
-        </div>
-    </aside>
-
-    <!-- MOBILE BOTTOM NAVIGATION -->
-    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-app-border flex justify-around p-2 z-30 card-shadow">
-        <button onclick="switchTab('vandaag')" id="nav-mb-vandaag" class="flex flex-col items-center py-1 px-3 text-app-primary">
-            <i class="fa-solid fa-sun text-base mb-0.5"></i><span class="text-[10px] font-medium">Vandaag</span>
-        </button>
-        <button onclick="switchTab('taken')" id="nav-mb-taken" class="flex flex-col items-center py-1 px-3 text-app-muted">
-            <i class="fa-solid fa-calendar-week text-base mb-0.5"></i><span class="text-[10px] font-medium">Agenda</span>
-        </button>
-        <button onclick="switchTab('gewoonte')" id="nav-mb-gewoonte" class="flex flex-col items-center py-1 px-3 text-app-muted">
-            <i class="fa-solid fa-chart-line text-base mb-0.5"></i><span class="text-[10px] font-medium">Gewoontes</span>
-        </button>
-        <button onclick="switchTab('boodschappen')" id="nav-mb-boodschappen" class="flex flex-col items-center py-1 px-3 text-app-muted">
-            <i class="fa-solid fa-cart-shopping text-base mb-0.5"></i><span class="text-[10px] font-medium">Lijsten</span>
-        </button>
-        <button onclick="switchTab('financien')" id="nav-mb-financien" class="flex flex-col items-center py-1 px-3 text-app-muted">
-            <i class="fa-solid fa-wallet text-base mb-0.5"></i><span class="text-[10px] font-medium">Budget</span>
-        </button>
-        <button onclick="switchTab('documenten')" id="nav-mb-documenten" class="flex flex-col items-center py-1 px-3 text-app-muted">
-            <i class="fa-solid fa-folder-closed text-base mb-0.5"></i><span class="text-[10px] font-medium">Mappen</span>
-        </button>
-    </div>
-
-    <!-- MAIN CONTENT CONTAINER -->
-    <main class="flex-1 flex flex-col h-full overflow-y-auto pb-20 md:pb-0">
-        <header class="bg-white border-b border-app-border px-4 sm:px-6 py-3.5 flex items-center justify-between sticky top-0 z-10 shrink-0">
+    <!-- WRAPPER VOOR DE HELE APP (Standaard verborgen via CSS) -->
+    <div id="app-container" class="flex flex-col md:flex-row h-screen w-screen overflow-hidden">
+        <!-- PC SIDEBAR -->
+        <aside class="w-64 bg-white border-r border-app-border hidden md:flex flex-col justify-between shrink-0 z-20">
             <div>
-                <h1 id="page-title" class="text-base sm:text-lg font-bold text-app-text">Vandaag</h1>
-                <p id="current-date" class="text-[11px] sm:text-xs text-app-muted font-medium"></p>
-            </div>
-            <button onclick="promptAddTask()" class="md:hidden bg-app-primary text-white text-xs px-3 py-1.5 rounded-lg font-semibold">+ Taak</button>
-        </header>
-
-        <div class="p-4 sm:p-6 max-w-6xl w-full mx-auto space-y-4 sm:space-y-6">
-            <!-- TAB 1: VANDAAG -->
-            <div id="tab-vandaag" class="tab-panel active space-y-4 sm:space-y-6">
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-app-border card-shadow">
-                        <span class="text-[11px] sm:text-xs font-medium text-app-muted">Open Taken</span>
-                        <p class="text-xl sm:text-2xl font-bold text-app-text mt-1" id="dash-open-tasks">0</p>
-                    </div>
-                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-app-border card-shadow">
-                        <span class="text-[11px] sm:text-xs font-medium text-app-muted">Gewoontes</span>
-                        <p class="text-xl sm:text-2xl font-bold text-app-success mt-1" id="dash-completed-habits">0 / 0</p>
-                    </div>
-                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-app-border card-shadow">
-                        <span class="text-[11px] sm:text-xs font-medium text-app-muted">Resterend Budget</span>
-                        <p class="text-xl sm:text-2xl font-bold text-app-primary mt-1" id="dash-remaining-budget">€ 0</p>
-                    </div>
-                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-app-border card-shadow flex flex-col justify-between col-span-2 lg:col-span-1">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[11px] sm:text-xs font-medium text-app-muted"><i class="fa-solid fa-fire text-app-danger mr-1"></i>Calorieën</span>
-                            <button onclick="promptAddCalorieLog()" class="text-[11px] text-app-primary font-bold hover:underline">+ Log</button>
-                        </div>
-                        <div class="mt-2">
-                            <div class="flex justify-between items-baseline mb-1">
-                                <span class="text-base sm:text-xl font-bold text-app-text" id="dash-calories-text">0 / 2500</span>
-                                <span class="text-[10px] font-bold text-app-muted">kcal</span>
-                            </div>
-                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                                <div id="dash-calories-bar" class="bg-app-danger h-full transition-all" style="width: 0%"></div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="p-5 border-b border-app-border flex items-center justify-between">
+                    <span class="text-xl font-bold tracking-tight text-app-text">LIFE<span class="text-app-primary">.</span></span>
+                    <span class="text-xs font-medium px-2 py-0.5 bg-blue-50 text-app-primary rounded-full">Pro</span>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-3 sm:space-y-4">
-                        <div class="flex justify-between items-center border-b border-app-border pb-3">
-                            <h2 class="font-bold text-app-text text-xs sm:text-sm"><i class="fa-solid fa-check-circle text-app-primary mr-2"></i>Taken voor Vandaag</h2>
-                            <button onclick="switchTab('taken')" class="text-xs text-app-primary font-medium hover:underline">Agenda</button>
-                        </div>
-                        <div id="vandaag-tasks-list" class="space-y-2"></div>
-                    </div>
-
-                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-3 sm:space-y-4">
-                        <div class="flex justify-between items-center border-b border-app-border pb-3">
-                            <h2 class="font-bold text-app-text text-xs sm:text-sm"><i class="fa-solid fa-fire text-app-warning mr-2"></i>Voortgang Gewoontes</h2>
-                            <button onclick="switchTab('gewoonte')" class="text-xs text-app-primary font-medium hover:underline">Beheer</button>
-                        </div>
-                        <div id="vandaag-habits-list" class="space-y-3"></div>
-                    </div>
-                </div>
+                <nav class="p-3 space-y-1" id="main-nav-pc">
+                    <button onclick="switchTab('vandaag')" id="nav-pc-vandaag" class="w-full flex items-center space-x-3 px-3 py-2.5 bg-app-primary text-white font-medium rounded-xl transition text-left text-sm">
+                        <i class="fa-solid fa-sun w-5"></i><span>Vandaag</span>
+                    </button>
+                    <button onclick="switchTab('taken')" id="nav-pc-taken" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
+                        <i class="fa-solid fa-calendar-week w-5"></i><span>Agenda & Taken</span>
+                    </button>
+                    <button onclick="switchTab('gewoonte')" id="nav-pc-gewoonte" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
+                        <i class="fa-solid fa-chart-line w-5"></i><span>Gewoontes & Doelen</span>
+                    </button>
+                    <button onclick="switchTab('boodschappen')" id="nav-pc-boodschappen" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
+                        <i class="fa-solid fa-cart-shopping w-5"></i><span>Boodschappen & Lijsten</span>
+                    </button>
+                    <button onclick="switchTab('financien')" id="nav-pc-financien" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
+                        <i class="fa-solid fa-wallet w-5"></i><span>Geld & Budget</span>
+                    </button>
+                    <button onclick="switchTab('documenten')" id="nav-pc-documenten" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
+                        <i class="fa-solid fa-folder-closed w-5"></i><span>Mappen & Papieren</span>
+                    </button>
+                </nav>
             </div>
 
-            <!-- TAB 2: TAKEN & AGENDA -->
-            <div id="tab-taken" class="tab-panel space-y-4 sm:space-y-6">
-                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
-                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
-                        <div>
-                            <h2 class="font-bold text-app-text text-sm">Weekagenda</h2>
-                            <p class="text-xs text-app-muted">Plan je afspraken in de week</p>
-                        </div>
-                        <button onclick="openAddEventModal()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Afspraak Inplannen</button>
-                    </div>
-
-                    <div class="overflow-x-auto pb-2">
-                        <div class="min-w-[700px] grid grid-cols-8 gap-1 bg-slate-100 p-1 rounded-xl border border-app-border text-center text-xs font-semibold">
-                            <div class="py-2 text-app-muted">Tijd</div>
-                            <div class="py-2 bg-white rounded-lg">Ma</div>
-                            <div class="py-2 bg-white rounded-lg">Di</div>
-                            <div class="py-2 bg-white rounded-lg">Wo</div>
-                            <div class="py-2 bg-white rounded-lg">Do</div>
-                            <div class="py-2 bg-white rounded-lg">Vr</div>
-                            <div class="py-2 bg-white rounded-lg">Za</div>
-                            <div class="py-2 bg-white rounded-lg">Zo</div>
-                        </div>
-                        <div id="calendar-grid" class="min-w-[700px] h-80 sm:h-96 overflow-y-auto space-y-1 mt-1"></div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
-                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                        <h2 class="font-bold text-app-text text-sm">Losse Takenlijst</h2>
-                        <div class="flex flex-wrap gap-2">
-                            <button onclick="openBulkTaskModal()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3.5 py-2 rounded-xl font-medium transition flex items-center space-x-1.5">
-                                <i class="fa-solid fa-list-check text-app-primary"></i><span>Snel Invoeren</span>
-                            </button>
-                            <button onclick="promptAddTask()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Taak</button>
-                        </div>
-                    </div>
-                    <div id="full-tasks-list" class="space-y-2"></div>
+            <div class="p-3 border-t border-app-border space-y-2">
+                <div class="flex items-center justify-between text-[11px] text-app-muted px-2 pt-1">
+                    <button onclick="exportBackup()" class="hover:text-app-primary"><i class="fa-solid fa-download mr-1"></i>Backup</button>
+                    <button onclick="importBackupPrompt()" class="hover:text-app-primary"><i class="fa-solid fa-upload mr-1"></i>Herstel</button>
+                    <button onclick="lockAppAgain()" class="text-app-danger hover:underline">Vergrendel</button>
                 </div>
             </div>
+        </aside>
 
-            <!-- TAB 3: GEWOONTES & DOELEN -->
-            <div id="tab-gewoonte" class="tab-panel space-y-4 sm:space-y-6">
-                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h2 class="font-bold text-app-text text-sm">Gewoontes Tracker</h2>
-                            <p class="text-xs text-app-muted">Volg je dagelijkse voortgang</p>
-                        </div>
-                        <button onclick="promptAddAdvancedHabit()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Gewoonte</button>
-                    </div>
-                    <div id="full-habits-list" class="space-y-4 pt-2"></div>
-                </div>
-            </div>
-
-            <!-- TAB 4: BOODSCHAPPEN & LIJSTEN -->
-            <div id="tab-boodschappen" class="tab-panel space-y-4 sm:space-y-6">
-                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
-                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-app-border pb-3">
-                        <div class="flex items-center space-x-2">
-                            <i class="fa-solid fa-fire text-app-danger text-lg"></i>
-                            <div>
-                                <h2 class="font-bold text-app-text text-sm">Calorie Tracker Widget</h2>
-                                <p class="text-xs text-app-muted">Volg je dagelijkse inname</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-3">
-                            <button onclick="promptSetCalorieTarget()" class="text-xs text-app-muted hover:text-app-text">Doel aanpassen</button>
-                            <button onclick="promptAddCalorieLog()" class="bg-app-danger hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded-xl font-medium">+ Loggen</button>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                        <div class="space-y-1">
-                            <div class="flex justify-between text-xs font-bold">
-                                <span class="text-app-text">Totaal Vandaag</span>
-                                <span id="boodschap-cal-text">0 / 2500 kcal</span>
-                            </div>
-                            <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
-                                <div id="boodschap-cal-bar" class="bg-app-danger h-full transition-all" style="width: 0%"></div>
-                            </div>
-                        </div>
-                        <div class="col-span-2 space-y-2">
-                            <span class="text-xs font-semibold text-app-muted block">Gelogde maaltijden vandaag:</span>
-                            <div id="calorie-logs-list" class="flex flex-wrap gap-2"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
-                        <div class="flex justify-between items-center">
-                            <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-basket-shopping text-app-primary mr-2"></i>Boodschappenlijst</h2>
-                            <button onclick="clearCheckedGroceries()" class="text-xs text-app-muted hover:text-app-danger">Wis afgevinkt</button>
-                        </div>
-                        <div class="flex space-x-2">
-                            <input id="grocery-input" type="text" placeholder="Item..." class="flex-1 text-xs bg-app-bg border border-app-border rounded-xl px-3 py-2.5 focus:outline-none">
-                            <input id="grocery-calories-input" type="number" placeholder="kcal" class="w-16 text-xs bg-app-bg border border-app-border rounded-xl px-2 py-2.5 focus:outline-none">
-                            <button onclick="addGrocery()" class="bg-app-primary text-white text-xs px-3.5 py-2.5 rounded-xl font-medium shrink-0">Voeg toe</button>
-                        </div>
-                        <div id="full-groceries-list" class="space-y-2"></div>
-                    </div>
-
-                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
-                        <div class="flex justify-between items-center">
-                            <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-utensils text-app-warning mr-2"></i>Mijn Recepten</h2>
-                            <button onclick="promptAddRecipe()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3 py-2 rounded-xl font-medium">+ Recept</button>
-                        </div>
-                        <div id="recipes-list" class="space-y-3"></div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-list-check text-app-success mr-2"></i>Speciale Lijsten</h2>
-                            <p class="text-xs text-app-muted">Bijv. aankopen voor huis</p>
-                        </div>
-                        <button onclick="promptCreateCustomList()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Lijst</button>
-                    </div>
-                    <div id="custom-lists-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                </div>
-            </div>
-
-            <!-- TAB 5: GELD & BUDGET -->
-            <div id="tab-financien" class="tab-panel space-y-4 sm:space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                    <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow">
-                        <span class="text-xs text-app-muted font-medium">Inkomsten p/m</span>
-                        <p class="text-xl font-bold text-app-success mt-1" id="fin-income">€ 0</p>
-                        <button onclick="promptSetIncome()" class="text-[11px] text-app-primary font-medium hover:underline mt-1">Aanpassen</button>
-                    </div>
-                    <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow">
-                        <span class="text-xs text-app-muted font-medium">Vaste Lasten p/m</span>
-                        <p class="text-xl font-bold text-app-danger mt-1" id="fin-expenses">€ 0</p>
-                    </div>
-                    <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow bg-blue-50/50">
-                        <span class="text-xs text-app-primary font-bold">Nog Over Deze Maand</span>
-                        <p class="text-2xl font-black text-app-text mt-1" id="fin-remaining">€ 0</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
-                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
-                        <div>
-                            <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-users text-app-primary mr-2"></i>Groepsuitgaven & Balans</h2>
-                            <p class="text-xs text-app-muted">Wie moet wat verrekenen?</p>
-                        </div>
-                        <div class="flex flex-wrap gap-2">
-                            <button onclick="promptCreateGroup()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3 py-2 rounded-xl font-medium">+ Groep</button>
-                            <button onclick="promptAddExpenseToGroup()" class="bg-app-primary text-white text-xs px-3 py-2 rounded-xl font-medium">+ Uitgave</button>
-                        </div>
-                    </div>
-
-                    <div id="group-selector-container" class="flex space-x-2 overflow-x-auto pb-1"></div>
-                    <div id="group-details-container" class="space-y-4 pt-2"></div>
-                </div>
-
-                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h2 class="font-bold text-app-text text-sm">Vaste Lasten</h2>
-                        <button onclick="promptAddFixedCost()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3 py-2 rounded-xl font-medium">+ Vaste Last</button>
-                    </div>
-                    <div id="fixed-costs-list" class="space-y-2"></div>
-                </div>
-            </div>
-
-            <!-- TAB 6: MAPPEN & PAPIEREN -->
-            <div id="tab-documenten" class="tab-panel space-y-4 sm:space-y-6">
-                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h2 class="font-bold text-app-text text-sm">Mappen & Documenten Opslag</h2>
-                            <p class="text-xs text-app-muted">Facturen en garanties per categorie</p>
-                        </div>
-                        <button onclick="promptCreateFolder()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Map</button>
-                    </div>
-                    <div id="folders-container" class="space-y-6 pt-2"></div>
-                </div>
-            </div>
+        <!-- MOBILE BOTTOM NAVIGATION -->
+        <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-app-border flex justify-around p-2 z-30 card-shadow">
+            <button onclick="switchTab('vandaag')" id="nav-mb-vandaag" class="flex flex-col items-center py-1 px-3 text-app-primary">
+                <i class="fa-solid fa-sun text-base mb-0.5"></i><span class="text-[10px] font-medium">Vandaag</span>
+            </button>
+            <button onclick="switchTab('taken')" id="nav-mb-taken" class="flex flex-col items-center py-1 px-3 text-app-muted">
+                <i class="fa-solid fa-calendar-week text-base mb-0.5"></i><span class="text-[10px] font-medium">Agenda</span>
+            </button>
+            <button onclick="switchTab('gewoonte')" id="nav-mb-gewoonte" class="flex flex-col items-center py-1 px-3 text-app-muted">
+                <i class="fa-solid fa-chart-line text-base mb-0.5"></i><span class="text-[10px] font-medium">Gewoontes</span>
+            </button>
+            <button onclick="switchTab('boodschappen')" id="nav-mb-boodschappen" class="flex flex-col items-center py-1 px-3 text-app-muted">
+                <i class="fa-solid fa-cart-shopping text-base mb-0.5"></i><span class="text-[10px] font-medium">Lijsten</span>
+            </button>
+            <button onclick="switchTab('financien')" id="nav-mb-financien" class="flex flex-col items-center py-1 px-3 text-app-muted">
+                <i class="fa-solid fa-wallet text-base mb-0.5"></i><span class="text-[10px] font-medium">Budget</span>
+            </button>
+            <button onclick="switchTab('documenten')" id="nav-mb-documenten" class="flex flex-col items-center py-1 px-3 text-app-muted">
+                <i class="fa-solid fa-folder-closed text-base mb-0.5"></i><span class="text-[10px] font-medium">Mappen</span>
+            </button>
         </div>
-    </main>
+
+        <!-- MAIN CONTENT CONTAINER -->
+        <main class="flex-1 flex flex-col h-full overflow-y-auto pb-20 md:pb-0">
+            <header class="bg-white border-b border-app-border px-4 sm:px-6 py-3.5 flex items-center justify-between sticky top-0 z-10 shrink-0">
+                <div>
+                    <h1 id="page-title" class="text-base sm:text-lg font-bold text-app-text">Vandaag</h1>
+                    <p id="current-date" class="text-[11px] sm:text-xs text-app-muted font-medium"></p>
+                </div>
+                <button onclick="promptAddTask()" class="md:hidden bg-app-primary text-white text-xs px-3 py-1.5 rounded-lg font-semibold">+ Taak</button>
+            </header>
+
+            <div class="p-4 sm:p-6 max-w-6xl w-full mx-auto space-y-4 sm:space-y-6">
+                <!-- TAB 1: VANDAAG -->
+                <div id="tab-vandaag" class="tab-panel active space-y-4 sm:space-y-6">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                        <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-app-border card-shadow">
+                            <span class="text-[11px] sm:text-xs font-medium text-app-muted">Open Taken</span>
+                            <p class="text-xl sm:text-2xl font-bold text-app-text mt-1" id="dash-open-tasks">0</p>
+                        </div>
+                        <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-app-border card-shadow">
+                            <span class="text-[11px] sm:text-xs font-medium text-app-muted">Gewoontes</span>
+                            <p class="text-xl sm:text-2xl font-bold text-app-success mt-1" id="dash-completed-habits">0 / 0</p>
+                        </div>
+                        <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-app-border card-shadow">
+                            <span class="text-[11px] sm:text-xs font-medium text-app-muted">Resterend Budget</span>
+                            <p class="text-xl sm:text-2xl font-bold text-app-primary mt-1" id="dash-remaining-budget">€ 0</p>
+                        </div>
+                        <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-app-border card-shadow flex flex-col justify-between col-span-2 lg:col-span-1">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[11px] sm:text-xs font-medium text-app-muted"><i class="fa-solid fa-fire text-app-danger mr-1"></i>Calorieën</span>
+                                <button onclick="promptAddCalorieLog()" class="text-[11px] text-app-primary font-bold hover:underline">+ Log</button>
+                            </div>
+                            <div class="mt-2">
+                                <div class="flex justify-between items-baseline mb-1">
+                                    <span class="text-base sm:text-xl font-bold text-app-text" id="dash-calories-text">0 / 2500</span>
+                                    <span class="text-[10px] font-bold text-app-muted">kcal</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                    <div id="dash-calories-bar" class="bg-app-danger h-full transition-all" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-3 sm:space-y-4">
+                            <div class="flex justify-between items-center border-b border-app-border pb-3">
+                                <h2 class="font-bold text-app-text text-xs sm:text-sm"><i class="fa-solid fa-check-circle text-app-primary mr-2"></i>Taken voor Vandaag</h2>
+                                <button onclick="switchTab('taken')" class="text-xs text-app-primary font-medium hover:underline">Agenda</button>
+                            </div>
+                            <div id="vandaag-tasks-list" class="space-y-2"></div>
+                        </div>
+
+                        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-3 sm:space-y-4">
+                            <div class="flex justify-between items-center border-b border-app-border pb-3">
+                                <h2 class="font-bold text-app-text text-xs sm:text-sm"><i class="fa-solid fa-fire text-app-warning mr-2"></i>Voortgang Gewoontes</h2>
+                                <button onclick="switchTab('gewoonte')" class="text-xs text-app-primary font-medium hover:underline">Beheer</button>
+                            </div>
+                            <div id="vandaag-habits-list" class="space-y-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: TAKEN & AGENDA -->
+                <div id="tab-taken" class="tab-panel space-y-4 sm:space-y-6">
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                            <div>
+                                <h2 class="font-bold text-app-text text-sm">Weekagenda</h2>
+                                <p class="text-xs text-app-muted">Plan je afspraken in de week</p>
+                            </div>
+                            <button onclick="openAddEventModal()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Afspraak Inplannen</button>
+                        </div>
+
+                        <div class="overflow-x-auto pb-2">
+                            <div class="min-w-[700px] grid grid-cols-8 gap-1 bg-slate-100 p-1 rounded-xl border border-app-border text-center text-xs font-semibold">
+                                <div class="py-2 text-app-muted">Tijd</div>
+                                <div class="py-2 bg-white rounded-lg">Ma</div>
+                                <div class="py-2 bg-white rounded-lg">Di</div>
+                                <div class="py-2 bg-white rounded-lg">Wo</div>
+                                <div class="py-2 bg-white rounded-lg">Do</div>
+                                <div class="py-2 bg-white rounded-lg">Vr</div>
+                                <div class="py-2 bg-white rounded-lg">Za</div>
+                                <div class="py-2 bg-white rounded-lg">Zo</div>
+                            </div>
+                            <div id="calendar-grid" class="min-w-[700px] h-80 sm:h-96 overflow-y-auto space-y-1 mt-1"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                            <h2 class="font-bold text-app-text text-sm">Losse Takenlijst</h2>
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="openBulkTaskModal()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3.5 py-2 rounded-xl font-medium transition flex items-center space-x-1.5">
+                                    <i class="fa-solid fa-list-check text-app-primary"></i><span>Snel Invoeren</span>
+                                </button>
+                                <button onclick="promptAddTask()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Taak</button>
+                            </div>
+                        </div>
+                        <div id="full-tasks-list" class="space-y-2"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: GEWOONTES & DOELEN -->
+                <div id="tab-gewoonte" class="tab-panel space-y-4 sm:space-y-6">
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h2 class="font-bold text-app-text text-sm">Gewoontes Tracker</h2>
+                                <p class="text-xs text-app-muted">Volg je dagelijkse voortgang</p>
+                            </div>
+                            <button onclick="promptAddAdvancedHabit()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Gewoonte</button>
+                        </div>
+                        <div id="full-habits-list" class="space-y-4 pt-2"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: BOODSCHAPPEN & LIJSTEN -->
+                <div id="tab-boodschappen" class="tab-panel space-y-4 sm:space-y-6">
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-app-border pb-3">
+                            <div class="flex items-center space-x-2">
+                                <i class="fa-solid fa-fire text-app-danger text-lg"></i>
+                                <div>
+                                    <h2 class="font-bold text-app-text text-sm">Calorie Tracker Widget</h2>
+                                    <p class="text-xs text-app-muted">Volg je dagelijkse inname</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <button onclick="promptSetCalorieTarget()" class="text-xs text-app-muted hover:text-app-text">Doel aanpassen</button>
+                                <button onclick="promptAddCalorieLog()" class="bg-app-danger hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded-xl font-medium">+ Loggen</button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-xs font-bold">
+                                    <span class="text-app-text">Totaal Vandaag</span>
+                                    <span id="boodschap-cal-text">0 / 2500 kcal</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                                    <div id="boodschap-cal-bar" class="bg-app-danger h-full transition-all" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="col-span-2 space-y-2">
+                                <span class="text-xs font-semibold text-app-muted block">Gelogde maaltijden vandaag:</span>
+                                <div id="calorie-logs-list" class="flex flex-wrap gap-2"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
+                            <div class="flex justify-between items-center">
+                                <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-basket-shopping text-app-primary mr-2"></i>Boodschappenlijst</h2>
+                                <button onclick="clearCheckedGroceries()" class="text-xs text-app-muted hover:text-app-danger">Wis afgevinkt</button>
+                            </div>
+                            <div class="flex space-x-2">
+                                <input id="grocery-input" type="text" placeholder="Item..." class="flex-1 text-xs bg-app-bg border border-app-border rounded-xl px-3 py-2.5 focus:outline-none">
+                                <input id="grocery-calories-input" type="number" placeholder="kcal" class="w-16 text-xs bg-app-bg border border-app-border rounded-xl px-2 py-2.5 focus:outline-none">
+                                <button onclick="addGrocery()" class="bg-app-primary text-white text-xs px-3.5 py-2.5 rounded-xl font-medium shrink-0">Voeg toe</button>
+                            </div>
+                            <div id="full-groceries-list" class="space-y-2"></div>
+                        </div>
+
+                        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
+                            <div class="flex justify-between items-center">
+                                <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-utensils text-app-warning mr-2"></i>Mijn Recepten</h2>
+                                <button onclick="promptAddRecipe()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3 py-2 rounded-xl font-medium">+ Recept</button>
+                            </div>
+                            <div id="recipes-list" class="space-y-3"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-list-check text-app-success mr-2"></i>Speciale Lijsten</h2>
+                                <p class="text-xs text-app-muted">Bijv. aankopen voor huis</p>
+                            </div>
+                            <button onclick="promptCreateCustomList()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Lijst</button>
+                        </div>
+                        <div id="custom-lists-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 5: GELD & BUDGET -->
+                <div id="tab-financien" class="tab-panel space-y-4 sm:space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                        <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow">
+                            <span class="text-xs text-app-muted font-medium">Inkomsten p/m</span>
+                            <p class="text-xl font-bold text-app-success mt-1" id="fin-income">€ 0</p>
+                            <button onclick="promptSetIncome()" class="text-[11px] text-app-primary font-medium hover:underline mt-1">Aanpassen</button>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow">
+                            <span class="text-xs text-app-muted font-medium">Vaste Lasten p/m</span>
+                            <p class="text-xl font-bold text-app-danger mt-1" id="fin-expenses">€ 0</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow bg-blue-50/50">
+                            <span class="text-xs text-app-primary font-bold">Nog Over Deze Maand</span>
+                            <p class="text-2xl font-black text-app-text mt-1" id="fin-remaining">€ 0</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                            <div>
+                                <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-users text-app-primary mr-2"></i>Groepsuitgaven & Balans</h2>
+                                <p class="text-xs text-app-muted">Wie moet wat verrekenen?</p>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="promptCreateGroup()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3 py-2 rounded-xl font-medium">+ Groep</button>
+                                <button onclick="promptAddExpenseToGroup()" class="bg-app-primary text-white text-xs px-3 py-2 rounded-xl font-medium">+ Uitgave</button>
+                            </div>
+                        </div>
+
+                        <div id="group-selector-container" class="flex space-x-2 overflow-x-auto pb-1"></div>
+                        <div id="group-details-container" class="space-y-4 pt-2"></div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h2 class="font-bold text-app-text text-sm">Vaste Lasten</h2>
+                            <button onclick="promptAddFixedCost()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3 py-2 rounded-xl font-medium">+ Vaste Last</button>
+                        </div>
+                        <div id="fixed-costs-list" class="space-y-2"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 6: MAPPEN & PAPIEREN -->
+                <div id="tab-documenten" class="tab-panel space-y-4 sm:space-y-6">
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h2 class="font-bold text-app-text text-sm">Mappen & Documenten Opslag</h2>
+                                <p class="text-xs text-app-muted">Facturen en garanties per categorie</p>
+                            </div>
+                            <button onclick="promptCreateFolder()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Map</button>
+                        </div>
+                        <div id="folders-container" class="space-y-6 pt-2"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 
     <!-- BULK TAKEN INVOEREN MODAL -->
     <div id="bulk-task-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
@@ -486,32 +497,21 @@
 
         let state = initialState;
 
-        function checkAccess() {
-            const hasPaid = localStorage.getItem('LIFE_USER_PAID');
-            const landingScreen = document.getElementById('landing-screen');
-            if (hasPaid === 'true') {
-                landingScreen.classList.add('hidden');
-            } else {
-                landingScreen.classList.remove('hidden');
-            }
-        }
-
         function simulateSuccessfulPayment() {
             localStorage.setItem('LIFE_USER_PAID', 'true');
         }
 
         function bypassPaywallForTesting() {
             localStorage.setItem('LIFE_USER_PAID', 'true');
-            checkAccess();
+            location.reload();
         }
 
         function lockAppAgain() {
             localStorage.removeItem('LIFE_USER_PAID');
-            checkAccess();
+            location.reload();
         }
 
         function loadData() {
-            checkAccess();
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) {
                 try { state = { ...initialState, ...JSON.parse(saved) }; } catch(e){}
