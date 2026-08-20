@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LIFE — Dagelijkse Planner</title>
     
-    <!-- PWA / App Instellingen -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="LIFE">
@@ -49,8 +48,8 @@
 </head>
 <body class="flex flex-col md:flex-row h-screen overflow-hidden">
 
-    <!-- LANDING / BETAAL PAYWALL PAGINA -->
-    <div id="landing-screen" class="fixed inset-0 bg-[#f9fafb] z-50 overflow-y-auto flex items-center justify-center p-4 hidden">
+    <!-- LANDING / BETAAL PAYWALL PAGINA (Standaard altijds zichtbaar tenzij betaald) -->
+    <div id="landing-screen" class="fixed inset-0 bg-[#f9fafb] z-50 overflow-y-auto flex items-center justify-center p-4">
         <div class="max-w-[750px] w-full bg-white border border-gray-200 rounded-2xl p-6 sm:p-12 card-shadow my-auto">
             <div class="text-center mb-8 sm:mb-10">
                 <span class="inline-block bg-gray-100 text-gray-700 text-xs font-semibold px-3 py-1.5 rounded-full uppercase tracking-wider mb-4">Exclusief Systeem</span>
@@ -104,7 +103,7 @@
         </div>
     </div>
 
-    <!-- PC SIDEBAR (Verstopt op GSM) -->
+    <!-- PC SIDEBAR -->
     <aside class="w-64 bg-white border-r border-app-border hidden md:flex flex-col justify-between shrink-0 z-20">
         <div>
             <div class="p-5 border-b border-app-border flex items-center justify-between">
@@ -143,7 +142,7 @@
         </div>
     </aside>
 
-    <!-- MOBILE BOTTOM NAVIGATION (Alleen zichtbaar op telefoon) -->
+    <!-- MOBILE BOTTOM NAVIGATION -->
     <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-app-border flex justify-around p-2 z-30 card-shadow">
         <button onclick="switchTab('vandaag')" id="nav-mb-vandaag" class="flex flex-col items-center py-1 px-3 text-app-primary">
             <i class="fa-solid fa-sun text-base mb-0.5"></i><span class="text-[10px] font-medium">Vandaag</span>
@@ -172,12 +171,10 @@
                 <h1 id="page-title" class="text-base sm:text-lg font-bold text-app-text">Vandaag</h1>
                 <p id="current-date" class="text-[11px] sm:text-xs text-app-muted font-medium"></p>
             </div>
-            <!-- Extra snelle actieknop voor mobiel -->
             <button onclick="promptAddTask()" class="md:hidden bg-app-primary text-white text-xs px-3 py-1.5 rounded-lg font-semibold">+ Taak</button>
         </header>
 
         <div class="p-4 sm:p-6 max-w-6xl w-full mx-auto space-y-4 sm:space-y-6">
-
             <!-- TAB 1: VANDAAG -->
             <div id="tab-vandaag" class="tab-panel active space-y-4 sm:space-y-6">
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -408,7 +405,6 @@
                     <div id="folders-container" class="space-y-6 pt-2"></div>
                 </div>
             </div>
-
         </div>
     </main>
 
@@ -536,25 +532,21 @@
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' });
 
         function switchTab(tabId) {
-            // Update PC menu styling
             document.querySelectorAll('#main-nav-pc button').forEach(b => {
                 b.className = "w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm";
             });
             const pcBtn = document.getElementById(`nav-pc-${tabId}`);
             if (pcBtn) pcBtn.className = "w-full flex items-center space-x-3 px-3 py-2.5 bg-app-primary text-white font-medium rounded-xl transition text-left text-sm";
 
-            // Update Mobile menu styling
             document.querySelectorAll('.md\\:hidden.fixed.bottom-0 button').forEach(b => {
                 b.className = "flex flex-col items-center py-1 px-3 text-app-muted";
             });
             const mbBtn = document.getElementById(`nav-mb-${tabId}`);
             if (mbBtn) mbBtn.className = "flex flex-col items-center py-1 px-3 text-app-primary";
 
-            // Titel aanpassen
             const titles = { 'vandaag': 'Vandaag', 'taken': 'Agenda & Taken', 'gewoonte': 'Gewoontes & Doelen', 'boodschappen': 'Boodschappen & Lijsten', 'financien': 'Geld & Budget', 'documenten': 'Mappen & Papieren' };
             document.getElementById('page-title').innerText = titles[tabId] || 'Dashboard';
 
-            // Panelen wisselen
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
             const panel = document.getElementById(`tab-${tabId}`);
             if (panel) panel.classList.add('active');
@@ -823,7 +815,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         ${activeGroup.members.map(m => `
                             <div class="p-2.5 bg-white rounded-xl border border-app-border flex justify-between items-center">
-                                <span class="font-semibold text-app-text">${m}</span>
+                                <span class="semibold text-app-text">${m}</span>
                                 <span class="font-bold ${(balances[m]||0) >= 0 ? 'text-app-success' : 'text-app-danger'}">€ ${(balances[m]||0).toFixed(2)}</span>
                             </div>
                         `).join('')}
