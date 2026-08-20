@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LIFE — Dagelijkse Planner</title>
     
     <!-- PWA / App Instellingen -->
@@ -38,106 +38,99 @@
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background-color: #F8F9FA; color: #1F2937; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+        body { background-color: #F8F9FA; color: #1F2937; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
         .card-shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03); }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #F1F5F9; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden">
+<body class="flex flex-col md:flex-row h-screen overflow-hidden">
 
     <!-- LANDING / BETAAL PAYWALL PAGINA -->
     <div id="landing-screen" class="fixed inset-0 bg-[#f9fafb] z-50 overflow-y-auto flex items-center justify-center p-4 hidden">
-        <div class="max-w-[750px] w-full bg-white border border-gray-200 rounded-xl p-8 sm:p-12 card-shadow my-auto">
-            <div class="text-center mb-10">
+        <div class="max-w-[750px] w-full bg-white border border-gray-200 rounded-2xl p-6 sm:p-12 card-shadow my-auto">
+            <div class="text-center mb-8 sm:mb-10">
                 <span class="inline-block bg-gray-100 text-gray-700 text-xs font-semibold px-3 py-1.5 rounded-full uppercase tracking-wider mb-4">Exclusief Systeem</span>
-                <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">Bouw aan discipline, rust en volledige controle</h1>
-                <p class="text-gray-600 text-base sm:text-lg max-w-[600px] mx-auto">LIFE Assistent is ontworpen voor doeners die structuur willen aanbrengen in hun dagelijkse routines, financiën en doelen zonder afleiding.</p>
+                <h1 class="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-3 sm:mb-4 tracking-tight">Bouw aan discipline, rust en volledige controle</h1>
+                <p class="text-gray-600 text-sm sm:text-lg max-w-[600px] mx-auto">LIFE Assistent is ontworpen voor doeners die structuur willen aanbrengen in hun dagelijkse routines, financiën en doelen zonder afleiding.</p>
             </div>
 
-            <div class="text-lg font-bold text-gray-900 mb-5 border-b border-gray-100 pb-2">Waarom dit systeem werkt</div>
+            <div class="text-base sm:text-lg font-bold text-gray-900 mb-4 sm:mb-5 border-b border-gray-100 pb-2">Waarom dit systeem werkt</div>
 
-            <div class="space-y-5 mb-8">
-                <div class="flex items-start gap-4">
-                    <div class="text-xl bg-gray-100 p-2.5 rounded-lg">🎯</div>
+            <div class="space-y-4 sm:space-y-5 mb-8">
+                <div class="flex items-start gap-3 sm:gap-4">
+                    <div class="text-lg sm:text-xl bg-gray-100 p-2 sm:p-2.5 rounded-lg shrink-0">🎯</div>
                     <div>
-                        <h3 class="font-semibold text-gray-900 text-base mb-1">Alles-in-één Overzicht</h3>
-                        <p class="text-gray-600 text-sm">Geen versnipperde apps of notities meer. Beheer je dagelijkse taken, gewoontes en planning op één centrale, heldere plek.</p>
+                        <h3 class="font-semibold text-gray-900 text-sm sm:text-base mb-0.5">Alles-in-één Overzicht</h3>
+                        <p class="text-gray-600 text-xs sm:text-sm">Geen versnipperde apps of notities meer. Beheer je dagelijkse taken, gewoontes en planning op één centrale, heldere plek.</p>
                     </div>
                 </div>
-                <div class="flex items-start gap-4">
-                    <div class="text-xl bg-gray-100 p-2.5 rounded-lg">📈</div>
+                <div class="flex items-start gap-3 sm:gap-4">
+                    <div class="text-lg sm:text-xl bg-gray-100 p-2 sm:p-2.5 rounded-lg shrink-0">📈</div>
                     <div>
-                        <h3 class="font-semibold text-gray-900 text-base mb-1">Financiële Zekerheid & Budget</h3>
-                        <p class="text-gray-600 text-sm">Houd je vaste lasten, maandelijkse uitgaven en spaardoelen haarscherp bij, zodat je precies weet waar je aan toe bent.</p>
+                        <h3 class="font-semibold text-gray-900 text-sm sm:text-base mb-0.5">Financiële Zekerheid & Budget</h3>
+                        <p class="text-gray-600 text-xs sm:text-sm">Houd je vaste lasten, maandelijkse uitgaven en spaardoelen haarscherp bij, zodat je precies weet waar je aan toe bent.</p>
                     </div>
                 </div>
-                <div class="flex items-start gap-4">
-                    <div class="text-xl bg-gray-100 p-2.5 rounded-lg">⚡</div>
+                <div class="flex items-start gap-3 sm:gap-4">
+                    <div class="text-lg sm:text-xl bg-gray-100 p-2 sm:p-2.5 rounded-lg shrink-0">⚡</div>
                     <div>
-                        <h3 class="font-semibold text-gray-900 text-base mb-1">Gezondheid & Prestaties</h3>
-                        <p class="text-gray-600 text-sm">Volg je fysieke doelen, calorieën en dagelijkse gewoontes om structureel te bouwen aan een sterkere versie van jezelf.</p>
+                        <h3 class="font-semibold text-gray-900 text-sm sm:text-base mb-0.5">Gezondheid & Prestaties</h3>
+                        <p class="text-gray-600 text-xs sm:text-sm">Volg je fysieke doelen, calorieën en dagelijkse gewoontes om structureel te bouwen aan een sterkere versie van jezelf.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-gray-50 border-l-4 border-gray-900 p-5 rounded-r-lg mb-8">
-                <h4 class="font-semibold text-gray-900 text-sm mb-1">Geen complexe software, direct resultaat</h4>
-                <p class="text-gray-600 text-xs sm:text-sm">Dit platform is gebouwd vanuit de praktijk: efficiënt, doelgericht en zonder onnodige poespas. Je logt direct in en kunt meteen beginnen met optimaliseren.</p>
+            <div class="bg-gray-50 border-l-4 border-gray-900 p-4 sm:p-5 rounded-r-lg mb-8">
+                <h4 class="font-semibold text-gray-900 text-xs sm:text-sm mb-1">Geen complexe software, direct resultaat</h4>
+                <p class="text-gray-600 text-xs sm:text-sm">Dit platform is gebouwd vanuit de praktijk: efficiënt, doelgericht en zonder onnodige poespas. Je logt direct in en kunt meteen beginnen.</p>
             </div>
 
             <div class="text-center">
                 <!-- Jouw actieve Stripe Betaallink -->
-                <a href="https://buy.stripe.com/8x2dRa0kU9t506Fcebgfu00" target="_blank" onclick="simulateSuccessfulPayment()" class="inline-block bg-black text-white px-9 py-4 rounded-lg font-semibold text-base hover:bg-gray-800 transition transform hover:-translate-y-0.5 shadow-md">
+                <a href="https://buy.stripe.com/8x2dRa0kU9t506Fcebgfu00" target="_blank" onclick="simulateSuccessfulPayment()" class="block sm:inline-block w-full sm:w-auto bg-black text-white px-8 py-4 rounded-xl font-semibold text-sm sm:text-base hover:bg-gray-800 transition shadow-md text-center">
                     Krijg direct toegang tot LIFE Assistent
                 </a>
-                <p class="text-xs text-gray-400 mt-4">Flexibel. Je kan altijd opzeggen waar en wanneer je wil.</p>
+                <p class="text-[11px] sm:text-xs text-gray-400 mt-3">Flexibel. Je kan altijd opzeggen waar en wanneer je wil.</p>
                 
-                <!-- Testknop voor de ontwikkelfase -->
-                <div class="mt-6">
+                <!-- Testknop -->
+                <div class="mt-5">
                     <button onclick="bypassPaywallForTesting()" class="text-xs text-gray-400 underline hover:text-gray-600">Al betaald? Test app weergave</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- SIDEBAR -->
-    <aside class="w-64 bg-white border-r border-app-border flex flex-col justify-between hidden md:flex shrink-0 z-20">
+    <!-- PC SIDEBAR (Verstopt op GSM) -->
+    <aside class="w-64 bg-white border-r border-app-border hidden md:flex flex-col justify-between shrink-0 z-20">
         <div>
             <div class="p-5 border-b border-app-border flex items-center justify-between">
                 <span class="text-xl font-bold tracking-tight text-app-text">LIFE<span class="text-app-primary">.</span></span>
                 <span class="text-xs font-medium px-2 py-0.5 bg-blue-50 text-app-primary rounded-full">Pro</span>
             </div>
 
-            <nav class="p-3 space-y-1" id="main-nav">
-                <button onclick="switchTab('vandaag')" id="nav-vandaag" class="w-full flex items-center space-x-3 px-3 py-2.5 bg-app-primary text-white font-medium rounded-xl transition text-left">
+            <nav class="p-3 space-y-1" id="main-nav-pc">
+                <button onclick="switchTab('vandaag')" id="nav-pc-vandaag" class="w-full flex items-center space-x-3 px-3 py-2.5 bg-app-primary text-white font-medium rounded-xl transition text-left text-sm">
                     <i class="fa-solid fa-sun w-5"></i><span>Vandaag</span>
                 </button>
-                <button onclick="switchTab('taken')" id="nav-taken" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left">
+                <button onclick="switchTab('taken')" id="nav-pc-taken" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
                     <i class="fa-solid fa-calendar-week w-5"></i><span>Agenda & Taken</span>
                 </button>
-                <button onclick="switchTab('gewoonte')" id="nav-gewoonte" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left">
+                <button onclick="switchTab('gewoonte')" id="nav-pc-gewoonte" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
                     <i class="fa-solid fa-chart-line w-5"></i><span>Gewoontes & Doelen</span>
                 </button>
-                <button onclick="switchTab('boodschappen')" id="nav-boodschappen" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left">
+                <button onclick="switchTab('boodschappen')" id="nav-pc-boodschappen" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
                     <i class="fa-solid fa-cart-shopping w-5"></i><span>Boodschappen & Lijsten</span>
                 </button>
-                <button onclick="switchTab('financien')" id="nav-financien" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left">
+                <button onclick="switchTab('financien')" id="nav-pc-financien" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
                     <i class="fa-solid fa-wallet w-5"></i><span>Geld & Budget</span>
                 </button>
-                <button onclick="switchTab('documenten')" id="nav-documenten" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left">
+                <button onclick="switchTab('documenten')" id="nav-pc-documenten" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
                     <i class="fa-solid fa-folder-closed w-5"></i><span>Mappen & Papieren</span>
                 </button>
-
-                <div id="optional-nav-group" class="pt-3 border-t border-app-border space-y-1 hidden">
-                    <span class="px-3 text-[10px] font-bold text-app-muted uppercase tracking-wider">Extra Modules</span>
-                    <button onclick="switchTab('beleggingen')" id="nav-beleggingen" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left hidden">
-                        <i class="fa-solid fa-arrow-trend-up w-5"></i><span>Beleggingen</span>
-                    </button>
-                </div>
             </nav>
         </div>
 
@@ -145,47 +138,69 @@
             <div class="flex items-center justify-between text-[11px] text-app-muted px-2 pt-1">
                 <button onclick="exportBackup()" class="hover:text-app-primary"><i class="fa-solid fa-download mr-1"></i>Backup</button>
                 <button onclick="importBackupPrompt()" class="hover:text-app-primary"><i class="fa-solid fa-upload mr-1"></i>Herstel</button>
-                <button onclick="lockAppAgain()" class="text-app-danger hover:underline" title="Vergrendel app voor test">Vergrendel</button>
+                <button onclick="lockAppAgain()" class="text-app-danger hover:underline">Vergrendel</button>
             </div>
         </div>
     </aside>
 
-    <!-- MAIN CONTENT -->
-    <main class="flex-1 flex flex-col h-full overflow-y-auto">
-        <header class="bg-white border-b border-app-border px-6 py-4 flex items-center justify-between sticky top-0 z-10 shrink-0">
+    <!-- MOBILE BOTTOM NAVIGATION (Alleen zichtbaar op telefoon) -->
+    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-app-border flex justify-around p-2 z-30 card-shadow">
+        <button onclick="switchTab('vandaag')" id="nav-mb-vandaag" class="flex flex-col items-center py-1 px-3 text-app-primary">
+            <i class="fa-solid fa-sun text-base mb-0.5"></i><span class="text-[10px] font-medium">Vandaag</span>
+        </button>
+        <button onclick="switchTab('taken')" id="nav-mb-taken" class="flex flex-col items-center py-1 px-3 text-app-muted">
+            <i class="fa-solid fa-calendar-week text-base mb-0.5"></i><span class="text-[10px] font-medium">Agenda</span>
+        </button>
+        <button onclick="switchTab('gewoonte')" id="nav-mb-gewoonte" class="flex flex-col items-center py-1 px-3 text-app-muted">
+            <i class="fa-solid fa-chart-line text-base mb-0.5"></i><span class="text-[10px] font-medium">Gewoontes</span>
+        </button>
+        <button onclick="switchTab('boodschappen')" id="nav-mb-boodschappen" class="flex flex-col items-center py-1 px-3 text-app-muted">
+            <i class="fa-solid fa-cart-shopping text-base mb-0.5"></i><span class="text-[10px] font-medium">Lijsten</span>
+        </button>
+        <button onclick="switchTab('financien')" id="nav-mb-financien" class="flex flex-col items-center py-1 px-3 text-app-muted">
+            <i class="fa-solid fa-wallet text-base mb-0.5"></i><span class="text-[10px] font-medium">Budget</span>
+        </button>
+        <button onclick="switchTab('documenten')" id="nav-mb-documenten" class="flex flex-col items-center py-1 px-3 text-app-muted">
+            <i class="fa-solid fa-folder-closed text-base mb-0.5"></i><span class="text-[10px] font-medium">Mappen</span>
+        </button>
+    </div>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-1 flex flex-col h-full overflow-y-auto pb-20 md:pb-0">
+        <header class="bg-white border-b border-app-border px-4 sm:px-6 py-3.5 flex items-center justify-between sticky top-0 z-10 shrink-0">
             <div>
-                <h1 id="page-title" class="text-lg font-bold text-app-text">Vandaag</h1>
-                <p id="current-date" class="text-xs text-app-muted font-medium"></p>
+                <h1 id="page-title" class="text-base sm:text-lg font-bold text-app-text">Vandaag</h1>
+                <p id="current-date" class="text-[11px] sm:text-xs text-app-muted font-medium"></p>
             </div>
+            <!-- Extra snelle actieknop voor mobiel -->
+            <button onclick="promptAddTask()" class="md:hidden bg-app-primary text-white text-xs px-3 py-1.5 rounded-lg font-semibold">+ Taak</button>
         </header>
 
-        <div class="p-6 max-w-6xl w-full mx-auto space-y-6">
+        <div class="p-4 sm:p-6 max-w-6xl w-full mx-auto space-y-4 sm:space-y-6">
 
             <!-- TAB 1: VANDAAG -->
-            <div id="tab-vandaag" class="tab-panel active space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow">
-                        <span class="text-xs font-medium text-app-muted">Openstaande Taken</span>
-                        <p class="text-2xl font-bold text-app-text mt-1" id="dash-open-tasks">0</p>
+            <div id="tab-vandaag" class="tab-panel active space-y-4 sm:space-y-6">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-app-border card-shadow">
+                        <span class="text-[11px] sm:text-xs font-medium text-app-muted">Open Taken</span>
+                        <p class="text-xl sm:text-2xl font-bold text-app-text mt-1" id="dash-open-tasks">0</p>
                     </div>
-                    <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow">
-                        <span class="text-xs font-medium text-app-muted">Gewoontes Afgevinkt</span>
-                        <p class="text-2xl font-bold text-app-success mt-1" id="dash-completed-habits">0 / 0</p>
+                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-app-border card-shadow">
+                        <span class="text-[11px] sm:text-xs font-medium text-app-muted">Gewoontes</span>
+                        <p class="text-xl sm:text-2xl font-bold text-app-success mt-1" id="dash-completed-habits">0 / 0</p>
                     </div>
-                    <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow">
-                        <span class="text-xs font-medium text-app-muted">Nog over deze maand</span>
-                        <p class="text-2xl font-bold text-app-primary mt-1" id="dash-remaining-budget">€ 0</p>
+                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-app-border card-shadow">
+                        <span class="text-[11px] sm:text-xs font-medium text-app-muted">Resterend Budget</span>
+                        <p class="text-xl sm:text-2xl font-bold text-app-primary mt-1" id="dash-remaining-budget">€ 0</p>
                     </div>
-                    
-                    <!-- CALORIE WIDGET DASHBOARD -->
-                    <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow flex flex-col justify-between">
+                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-app-border card-shadow flex flex-col justify-between col-span-2 lg:col-span-1">
                         <div class="flex justify-between items-center">
-                            <span class="text-xs font-medium text-app-muted"><i class="fa-solid fa-fire text-app-danger mr-1"></i>Calorie Tracker</span>
+                            <span class="text-[11px] sm:text-xs font-medium text-app-muted"><i class="fa-solid fa-fire text-app-danger mr-1"></i>Calorieën</span>
                             <button onclick="promptAddCalorieLog()" class="text-[11px] text-app-primary font-bold hover:underline">+ Log</button>
                         </div>
                         <div class="mt-2">
                             <div class="flex justify-between items-baseline mb-1">
-                                <span class="text-xl font-bold text-app-text" id="dash-calories-text">0 / 2500</span>
+                                <span class="text-base sm:text-xl font-bold text-app-text" id="dash-calories-text">0 / 2500</span>
                                 <span class="text-[10px] font-bold text-app-muted">kcal</span>
                             </div>
                             <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
@@ -195,19 +210,19 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-3 sm:space-y-4">
                         <div class="flex justify-between items-center border-b border-app-border pb-3">
-                            <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-check-circle text-app-primary mr-2"></i>Taken voor Vandaag</h2>
-                            <button onclick="switchTab('taken')" class="text-xs text-app-primary font-medium hover:underline">Bekijk Agenda</button>
+                            <h2 class="font-bold text-app-text text-xs sm:text-sm"><i class="fa-solid fa-check-circle text-app-primary mr-2"></i>Taken voor Vandaag</h2>
+                            <button onclick="switchTab('taken')" class="text-xs text-app-primary font-medium hover:underline">Agenda</button>
                         </div>
                         <div id="vandaag-tasks-list" class="space-y-2"></div>
                     </div>
 
-                    <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-3 sm:space-y-4">
                         <div class="flex justify-between items-center border-b border-app-border pb-3">
-                            <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-fire text-app-warning mr-2"></i>Voortgang Gewoontes</h2>
-                            <button onclick="switchTab('gewoonte')" class="text-xs text-app-primary font-medium hover:underline">Beheer Gewoontes</button>
+                            <h2 class="font-bold text-app-text text-xs sm:text-sm"><i class="fa-solid fa-fire text-app-warning mr-2"></i>Voortgang Gewoontes</h2>
+                            <button onclick="switchTab('gewoonte')" class="text-xs text-app-primary font-medium hover:underline">Beheer</button>
                         </div>
                         <div id="vandaag-habits-list" class="space-y-3"></div>
                     </div>
@@ -215,39 +230,39 @@
             </div>
 
             <!-- TAB 2: TAKEN & AGENDA -->
-            <div id="tab-taken" class="tab-panel space-y-6">
-                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+            <div id="tab-taken" class="tab-panel space-y-4 sm:space-y-6">
+                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
                     <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
                         <div>
-                            <h2 class="font-bold text-app-text">Weekagenda (00:00 - 23:59)</h2>
+                            <h2 class="font-bold text-app-text text-sm">Weekagenda</h2>
                             <p class="text-xs text-app-muted">Plan je afspraken in de week</p>
                         </div>
                         <button onclick="openAddEventModal()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Afspraak Inplannen</button>
                     </div>
 
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto pb-2">
                         <div class="min-w-[700px] grid grid-cols-8 gap-1 bg-slate-100 p-1 rounded-xl border border-app-border text-center text-xs font-semibold">
                             <div class="py-2 text-app-muted">Tijd</div>
-                            <div class="py-2 bg-white rounded-lg">Maandag</div>
-                            <div class="py-2 bg-white rounded-lg">Dinsdag</div>
-                            <div class="py-2 bg-white rounded-lg">Woensdag</div>
-                            <div class="py-2 bg-white rounded-lg">Donderdag</div>
-                            <div class="py-2 bg-white rounded-lg">Vrijdag</div>
-                            <div class="py-2 bg-white rounded-lg">Zaterdag</div>
-                            <div class="py-2 bg-white rounded-lg">Zondag</div>
+                            <div class="py-2 bg-white rounded-lg">Ma</div>
+                            <div class="py-2 bg-white rounded-lg">Di</div>
+                            <div class="py-2 bg-white rounded-lg">Wo</div>
+                            <div class="py-2 bg-white rounded-lg">Do</div>
+                            <div class="py-2 bg-white rounded-lg">Vr</div>
+                            <div class="py-2 bg-white rounded-lg">Za</div>
+                            <div class="py-2 bg-white rounded-lg">Zo</div>
                         </div>
-                        <div id="calendar-grid" class="min-w-[700px] h-96 overflow-y-auto space-y-1 mt-1"></div>
+                        <div id="calendar-grid" class="min-w-[700px] h-80 sm:h-96 overflow-y-auto space-y-1 mt-1"></div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
                     <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
                         <h2 class="font-bold text-app-text text-sm">Losse Takenlijst</h2>
-                        <div class="flex space-x-2">
+                        <div class="flex flex-wrap gap-2">
                             <button onclick="openBulkTaskModal()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3.5 py-2 rounded-xl font-medium transition flex items-center space-x-1.5">
-                                <i class="fa-solid fa-list-check text-app-primary"></i><span>Snel Taken Invoeren</span>
+                                <i class="fa-solid fa-list-check text-app-primary"></i><span>Snel Invoeren</span>
                             </button>
-                            <button onclick="promptAddTask()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Nieuwe Taak</button>
+                            <button onclick="promptAddTask()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Taak</button>
                         </div>
                     </div>
                     <div id="full-tasks-list" class="space-y-2"></div>
@@ -255,33 +270,33 @@
             </div>
 
             <!-- TAB 3: GEWOONTES & DOELEN -->
-            <div id="tab-gewoonte" class="tab-panel space-y-6">
-                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+            <div id="tab-gewoonte" class="tab-panel space-y-4 sm:space-y-6">
+                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h2 class="font-bold text-app-text">Gewoontes met Voortgang Tracker</h2>
-                            <p class="text-xs text-app-muted">Blijf je dagelijkse voortgang visueel opvolgen</p>
+                            <h2 class="font-bold text-app-text text-sm">Gewoontes Tracker</h2>
+                            <p class="text-xs text-app-muted">Volg je dagelijkse voortgang</p>
                         </div>
-                        <button onclick="promptAddAdvancedHabit()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Nieuwe Gewoonte</button>
+                        <button onclick="promptAddAdvancedHabit()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Gewoonte</button>
                     </div>
                     <div id="full-habits-list" class="space-y-4 pt-2"></div>
                 </div>
             </div>
 
             <!-- TAB 4: BOODSCHAPPEN & LIJSTEN -->
-            <div id="tab-boodschappen" class="tab-panel space-y-6">
-                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
-                    <div class="flex justify-between items-center border-b border-app-border pb-3">
+            <div id="tab-boodschappen" class="tab-panel space-y-4 sm:space-y-6">
+                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-app-border pb-3">
                         <div class="flex items-center space-x-2">
                             <i class="fa-solid fa-fire text-app-danger text-lg"></i>
                             <div>
                                 <h2 class="font-bold text-app-text text-sm">Calorie Tracker Widget</h2>
-                                <p class="text-xs text-app-muted">Volg je dagelijkse inname en beheer gelogde maaltijden</p>
+                                <p class="text-xs text-app-muted">Volg je dagelijkse inname</p>
                             </div>
                         </div>
                         <div class="flex items-center space-x-3">
                             <button onclick="promptSetCalorieTarget()" class="text-xs text-app-muted hover:text-app-text">Doel aanpassen</button>
-                            <button onclick="promptAddCalorieLog()" class="bg-app-danger hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded-xl font-medium">+ Calorieën Loggen</button>
+                            <button onclick="promptAddCalorieLog()" class="bg-app-danger hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded-xl font-medium">+ Loggen</button>
                         </div>
                     </div>
 
@@ -302,44 +317,44 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
                         <div class="flex justify-between items-center">
-                            <h2 class="font-bold text-app-text"><i class="fa-solid fa-basket-shopping text-app-primary mr-2"></i>Boodschappenlijst</h2>
-                            <button onclick="clearCheckedGroceries()" class="text-xs text-app-muted hover:text-app-danger">Afgevinkt wis</button>
+                            <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-basket-shopping text-app-primary mr-2"></i>Boodschappenlijst</h2>
+                            <button onclick="clearCheckedGroceries()" class="text-xs text-app-muted hover:text-app-danger">Wis afgevinkt</button>
                         </div>
                         <div class="flex space-x-2">
-                            <input id="grocery-input" type="text" placeholder="Item toevoegen..." class="flex-1 text-xs bg-app-bg border border-app-border rounded-xl px-3 py-2 focus:outline-none" onkeypress="if(event.key==='Enter') addGrocery()">
-                            <input id="grocery-calories-input" type="number" placeholder="kcal" class="w-16 text-xs bg-app-bg border border-app-border rounded-xl px-2 py-2 focus:outline-none">
-                            <button onclick="addGrocery()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">Toevoegen</button>
+                            <input id="grocery-input" type="text" placeholder="Item..." class="flex-1 text-xs bg-app-bg border border-app-border rounded-xl px-3 py-2.5 focus:outline-none">
+                            <input id="grocery-calories-input" type="number" placeholder="kcal" class="w-16 text-xs bg-app-bg border border-app-border rounded-xl px-2 py-2.5 focus:outline-none">
+                            <button onclick="addGrocery()" class="bg-app-primary text-white text-xs px-3.5 py-2.5 rounded-xl font-medium shrink-0">Voeg toe</button>
                         </div>
                         <div id="full-groceries-list" class="space-y-2"></div>
                     </div>
 
-                    <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
                         <div class="flex justify-between items-center">
-                            <h2 class="font-bold text-app-text"><i class="fa-solid fa-utensils text-app-warning mr-2"></i>Mijn Recepten</h2>
+                            <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-utensils text-app-warning mr-2"></i>Mijn Recepten</h2>
                             <button onclick="promptAddRecipe()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3 py-2 rounded-xl font-medium">+ Recept</button>
                         </div>
                         <div id="recipes-list" class="space-y-3"></div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h2 class="font-bold text-app-text"><i class="fa-solid fa-list-check text-app-success mr-2"></i>Speciale Lijsten & Aankoop Trackers</h2>
-                            <p class="text-xs text-app-muted">Bijvoorbeeld: Spullen gekocht voor ons nieuwe huis</p>
+                            <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-list-check text-app-success mr-2"></i>Speciale Lijsten</h2>
+                            <p class="text-xs text-app-muted">Bijv. aankopen voor huis</p>
                         </div>
-                        <button onclick="promptCreateCustomList()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Nieuwe Lijst</button>
+                        <button onclick="promptCreateCustomList()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Lijst</button>
                     </div>
                     <div id="custom-lists-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </div>
             </div>
 
             <!-- TAB 5: GELD & BUDGET -->
-            <div id="tab-financien" class="tab-panel space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div id="tab-financien" class="tab-panel space-y-4 sm:space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                     <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow">
                         <span class="text-xs text-app-muted font-medium">Inkomsten p/m</span>
                         <p class="text-xl font-bold text-app-success mt-1" id="fin-income">€ 0</p>
@@ -355,15 +370,15 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
                     <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
                         <div>
-                            <h2 class="font-bold text-app-text"><i class="fa-solid fa-users text-app-primary mr-2"></i>Groepsuitgaven & Balans</h2>
-                            <p class="text-xs text-app-muted">Maak een groep aan, voer uitgaven in en zie meteen wie wat moet verrekenen.</p>
+                            <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-users text-app-primary mr-2"></i>Groepsuitgaven & Balans</h2>
+                            <p class="text-xs text-app-muted">Wie moet wat verrekenen?</p>
                         </div>
-                        <div class="flex space-x-2">
-                            <button onclick="promptCreateGroup()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3 py-2 rounded-xl font-medium">+ Nieuwe Groep</button>
-                            <button onclick="promptAddExpenseToGroup()" class="bg-app-primary text-white text-xs px-3 py-2 rounded-xl font-medium">+ Uitgave Toevoegen</button>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="promptCreateGroup()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3 py-2 rounded-xl font-medium">+ Groep</button>
+                            <button onclick="promptAddExpenseToGroup()" class="bg-app-primary text-white text-xs px-3 py-2 rounded-xl font-medium">+ Uitgave</button>
                         </div>
                     </div>
 
@@ -371,9 +386,9 @@
                     <div id="group-details-container" class="space-y-4 pt-2"></div>
                 </div>
 
-                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
                     <div class="flex justify-between items-center">
-                        <h2 class="font-bold text-app-text">Vaste Lasten</h2>
+                        <h2 class="font-bold text-app-text text-sm">Vaste Lasten</h2>
                         <button onclick="promptAddFixedCost()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3 py-2 rounded-xl font-medium">+ Vaste Last</button>
                     </div>
                     <div id="fixed-costs-list" class="space-y-2"></div>
@@ -381,24 +396,16 @@
             </div>
 
             <!-- TAB 6: MAPPEN & PAPIEREN -->
-            <div id="tab-documenten" class="tab-panel space-y-6">
-                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+            <div id="tab-documenten" class="tab-panel space-y-4 sm:space-y-6">
+                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-app-border card-shadow space-y-4">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h2 class="font-bold text-app-text">Mappen & Documenten Opslag</h2>
-                            <p class="text-xs text-app-muted">Organiseer je facturen en garanties per categorie</p>
+                            <h2 class="font-bold text-app-text text-sm">Mappen & Documenten Opslag</h2>
+                            <p class="text-xs text-app-muted">Facturen en garanties per categorie</p>
                         </div>
-                        <button onclick="promptCreateFolder()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Nieuwe Map</button>
+                        <button onclick="promptCreateFolder()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Map</button>
                     </div>
                     <div id="folders-container" class="space-y-6 pt-2"></div>
-                </div>
-            </div>
-
-            <!-- OPTIONELE TAB: BELEGGINGEN -->
-            <div id="tab-beleggingen" class="tab-panel space-y-6">
-                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
-                    <h2 class="font-bold text-app-text">Beleggingen Tracker</h2>
-                    <p class="text-xs text-app-muted">Optionele tracker voor je portfolio en lange termijn doelen.</p>
                 </div>
             </div>
 
@@ -406,10 +413,10 @@
     </main>
 
     <!-- BULK TAKEN INVOEREN MODAL -->
-    <div id="bulk-task-modal" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+    <div id="bulk-task-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-5 card-shadow space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="font-bold text-app-text text-base"><i class="fa-solid fa-list-check text-app-primary mr-2"></i>Snel Taken Invoeren</h3>
+                <h3 class="font-bold text-app-text text-sm"><i class="fa-solid fa-list-check text-app-primary mr-2"></i>Snel Taken Invoeren</h3>
                 <button onclick="closeBulkTaskModal()" class="text-app-muted hover:text-app-text"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <textarea id="bulk-task-input" rows="6" placeholder="Taak 1&#10;Taak 2" class="w-full text-xs border rounded-xl p-3 bg-slate-50 border-app-border focus:outline-none"></textarea>
@@ -421,9 +428,9 @@
     </div>
 
     <!-- AFSPRAAK TOEVOEGEN MODAL -->
-    <div id="event-modal" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+    <div id="event-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-5 card-shadow space-y-4">
-            <h3 class="font-bold text-app-text text-base">Afspraak Inplannen</h3>
+            <h3 class="font-bold text-app-text text-sm">Afspraak Inplannen</h3>
             <div class="space-y-3">
                 <div>
                     <label class="text-xs font-semibold text-app-muted block mb-1">Titel</label>
@@ -460,10 +467,10 @@
             calories: { current: 0, target: 2500, logs: [] },
             groceries: [],
             recipes: [
-                { id: 1, title: 'Pasta Bolognese', calories: 650, ingredients: [{ name: 'Spaghetti 500g', kcal: 350 }, { name: 'Gehakt 500g', kcal: 250 }, { name: 'Tomatensaus', kcal: 50 }] }
+                { id: 1, title: 'Pasta Bolognese', calories: 650, ingredients: [] }
             ],
             customLists: [
-                { id: 1, title: 'Uitzet Nieuw Huis', items: [{ title: 'Koffiemachine', cost: 120, checked: true }, { title: 'Zetel', cost: 850, checked: false }] }
+                { id: 1, title: 'Uitzet Nieuw Huis', items: [{ title: 'Koffiemachine', cost: 120, checked: true }] }
             ],
             income: 2500,
             fixedCosts: [{ id: 1, title: 'Huur/Hypotheek', amount: 850 }],
@@ -472,21 +479,17 @@
                     id: 1,
                     name: 'Samen Wonen',
                     members: ['Ik', 'Partner'],
-                    expenses: [
-                        { id: 101, title: 'Wekelijkse Boodschappen', amount: 120, paidBy: 'Ik', forMembers: ['Ik', 'Partner'] }
-                    ]
+                    expenses: [{ id: 101, title: 'Boodschappen', amount: 120, paidBy: 'Ik', forMembers: ['Ik', 'Partner'] }]
                 }
             ],
             activeGroupId: 1,
             folders: [
                 { id: 1, title: 'Facturen & Garanties', files: [] }
-            ],
-            modules: { beleggingen: false }
+            ]
         };
 
         let state = initialState;
 
-        // TOEGANG & PAYWALL LOGICA
         function checkAccess() {
             const hasPaid = localStorage.getItem('LIFE_USER_PAID');
             const landingScreen = document.getElementById('landing-screen');
@@ -522,7 +525,6 @@
             if(!state.expenseGroups) state.expenseGroups = [];
             if(!state.activeGroupId && state.expenseGroups.length > 0) state.activeGroupId = state.expenseGroups[0].id;
             
-            applyModules();
             renderAll();
         }
 
@@ -534,14 +536,25 @@
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' });
 
         function switchTab(tabId) {
-            document.querySelectorAll('#main-nav button').forEach(b => {
-                b.className = "w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left";
+            // Update PC menu styling
+            document.querySelectorAll('#main-nav-pc button').forEach(b => {
+                b.className = "w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm";
             });
-            const activeBtn = document.getElementById(`nav-${tabId}`);
-            if (activeBtn) {
-                activeBtn.className = "w-full flex items-center space-x-3 px-3 py-2.5 bg-app-primary text-white font-medium rounded-xl transition text-left";
-                document.getElementById('page-title').innerText = activeBtn.querySelector('span').innerText;
-            }
+            const pcBtn = document.getElementById(`nav-pc-${tabId}`);
+            if (pcBtn) pcBtn.className = "w-full flex items-center space-x-3 px-3 py-2.5 bg-app-primary text-white font-medium rounded-xl transition text-left text-sm";
+
+            // Update Mobile menu styling
+            document.querySelectorAll('.md\\:hidden.fixed.bottom-0 button').forEach(b => {
+                b.className = "flex flex-col items-center py-1 px-3 text-app-muted";
+            });
+            const mbBtn = document.getElementById(`nav-mb-${tabId}`);
+            if (mbBtn) mbBtn.className = "flex flex-col items-center py-1 px-3 text-app-primary";
+
+            // Titel aanpassen
+            const titles = { 'vandaag': 'Vandaag', 'taken': 'Agenda & Taken', 'gewoonte': 'Gewoontes & Doelen', 'boodschappen': 'Boodschappen & Lijsten', 'financien': 'Geld & Budget', 'documenten': 'Mappen & Papieren' };
+            document.getElementById('page-title').innerText = titles[tabId] || 'Dashboard';
+
+            // Panelen wisselen
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
             const panel = document.getElementById(`tab-${tabId}`);
             if (panel) panel.classList.add('active');
@@ -593,19 +606,19 @@
             const fTasks = document.getElementById('full-tasks-list');
             
             vTasks.innerHTML = state.tasks.filter(t => !t.completed).slice(0, 4).map(t => `
-                <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-app-border">
-                    <span class="text-xs font-medium text-app-text">${t.title}</span>
-                    <button onclick="toggleTask(${t.id})" class="text-xs text-app-primary font-semibold">Vink af</button>
+                <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-app-border text-xs">
+                    <span class="font-medium text-app-text truncate mr-2">${t.title}</span>
+                    <button onclick="toggleTask(${t.id})" class="text-app-primary font-semibold shrink-0">Vink af</button>
                 </div>
             `).join('') || '<p class="text-xs text-app-muted">Geen openstaande taken!</p>';
 
             fTasks.innerHTML = state.tasks.map(t => `
-                <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-app-border">
-                    <div class="flex items-center space-x-2">
-                        <input type="checkbox" ${t.completed ? 'checked' : ''} onclick="toggleTask(${t.id})" class="rounded text-app-primary">
-                        <span class="text-xs font-medium ${t.completed ? 'line-through text-app-muted' : 'text-app-text'}">${t.title}</span>
+                <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-app-border text-xs">
+                    <div class="flex items-center space-x-2 truncate mr-2">
+                        <input type="checkbox" ${t.completed ? 'checked' : ''} onclick="toggleTask(${t.id})" class="rounded text-app-primary shrink-0">
+                        <span class="font-medium truncate ${t.completed ? 'line-through text-app-muted' : 'text-app-text'}">${t.title}</span>
                     </div>
-                    <button onclick="deleteTask(${t.id})" class="text-xs text-app-muted hover:text-app-danger"><i class="fa-solid fa-trash-can"></i></button>
+                    <button onclick="deleteTask(${t.id})" class="text-app-muted hover:text-app-danger shrink-0"><i class="fa-solid fa-trash-can"></i></button>
                 </div>
             `).join('') || '<p class="text-xs text-app-muted">Geen taken.</p>';
 
@@ -614,30 +627,30 @@
 
             const gList = document.getElementById('full-groceries-list');
             gList.innerHTML = state.groceries.map(g => `
-                <div class="flex items-center justify-between p-2 bg-slate-50 rounded-xl border border-app-border">
-                    <label class="flex items-center space-x-2 cursor-pointer">
-                        <input type="checkbox" ${g.checked ? 'checked' : ''} onclick="toggleGrocery(${g.id})" class="rounded text-app-primary">
-                        <span class="text-xs font-medium ${g.checked ? 'line-through text-app-muted' : 'text-app-text'}">${g.title}</span>
+                <div class="flex items-center justify-between p-2 bg-slate-50 rounded-xl border border-app-border text-xs">
+                    <label class="flex items-center space-x-2 cursor-pointer truncate mr-2">
+                        <input type="checkbox" ${g.checked ? 'checked' : ''} onclick="toggleGrocery(${g.id})" class="rounded text-app-primary shrink-0">
+                        <span class="font-medium truncate ${g.checked ? 'line-through text-app-muted' : 'text-app-text'}">${g.title}</span>
                     </label>
-                    <div class="flex items-center space-x-2">
-                        ${g.calories ? `<button onclick="logCalorieDirect('${g.title}', ${g.calories})" class="text-[10px] bg-red-50 hover:bg-red-100 text-app-danger px-2 py-0.5 rounded font-bold transition">+ ${g.calories} kcal</button>` : ''}
-                        <button onclick="deleteGrocery(${g.id})" class="text-xs text-app-muted hover:text-app-danger"><i class="fa-solid fa-xmark"></i></button>
+                    <div class="flex items-center space-x-2 shrink-0">
+                        ${g.calories ? `<button onclick="logCalorieDirect('${g.title}', ${g.calories})" class="text-[10px] bg-red-50 hover:bg-red-100 text-app-danger px-2 py-0.5 rounded font-bold">+ ${g.calories} kcal</button>` : ''}
+                        <button onclick="deleteGrocery(${g.id})" class="text-app-muted hover:text-app-danger"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                 </div>
             `).join('') || '<p class="text-xs text-app-muted">Boodschappenlijst is leeg.</p>';
 
             const rList = document.getElementById('recipes-list');
             rList.innerHTML = state.recipes.map(r => `
-                <div class="p-3 bg-slate-50 rounded-xl border border-app-border space-y-2">
+                <div class="p-3 bg-slate-50 rounded-xl border border-app-border space-y-2 text-xs">
                     <div class="flex justify-between items-center">
-                        <div>
-                            <span class="text-xs font-bold text-app-text">${r.title}</span>
-                            ${r.calories ? `<span class="ml-2 text-[10px] bg-red-100 text-app-danger font-bold px-1.5 py-0.5 rounded-full">${r.calories} kcal</span>` : ''}
+                        <div class="truncate mr-2">
+                            <span class="font-bold text-app-text truncate">${r.title}</span>
+                            ${r.calories ? `<span class="ml-1 text-[10px] bg-red-100 text-app-danger font-bold px-1.5 py-0.5 rounded-full">${r.calories} kcal</span>` : ''}
                         </div>
-                        <div class="flex items-center space-x-1">
-                            <button onclick="logRecipeCalories(${r.id})" class="text-[11px] bg-emerald-600 text-white px-2 py-1 rounded-lg font-medium">+ Eten</button>
-                            <button onclick="addRecipeToGroceries(${r.id})" class="text-[11px] bg-app-primary text-white px-2 py-1 rounded-lg font-medium">+ Lijst</button>
-                            <button onclick="deleteRecipe(${r.id})" class="text-xs text-app-muted hover:text-app-danger pl-1"><i class="fa-solid fa-trash-can"></i></button>
+                        <div class="flex items-center space-x-1 shrink-0">
+                            <button onclick="logRecipeCalories(${r.id})" class="bg-emerald-600 text-white px-2 py-1 rounded-lg font-medium">+ Eten</button>
+                            <button onclick="addRecipeToGroceries(${r.id})" class="bg-app-primary text-white px-2 py-1 rounded-lg font-medium">+ Lijst</button>
+                            <button onclick="deleteRecipe(${r.id})" class="text-app-muted hover:text-app-danger pl-1"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
                 </div>
@@ -647,26 +660,26 @@
             cList.innerHTML = state.customLists.map(l => {
                 const totalSpent = l.items.reduce((acc, item) => acc + (item.checked ? Number(item.cost || 0) : 0), 0);
                 return `
-                    <div class="p-4 bg-slate-50 rounded-2xl border border-app-border space-y-3">
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-app-border space-y-3 text-xs">
                         <div class="flex justify-between items-center border-b pb-2">
-                            <span class="font-bold text-xs text-app-text">${l.title}</span>
+                            <span class="font-bold text-app-text">${l.title}</span>
                             <div class="flex items-center space-x-2">
-                                <span class="text-xs font-bold text-app-success">€ ${totalSpent}</span>
-                                <button onclick="deleteCustomList(${l.id})" class="text-xs text-app-muted hover:text-app-danger"><i class="fa-solid fa-trash-can"></i></button>
+                                <span class="font-bold text-app-success">€ ${totalSpent}</span>
+                                <button onclick="deleteCustomList(${l.id})" class="text-app-muted hover:text-app-danger"><i class="fa-solid fa-trash-can"></i></button>
                             </div>
                         </div>
                         <div class="space-y-1.5">
                             ${l.items.map((item, idx) => `
-                                <div class="flex items-center justify-between text-xs">
-                                    <label class="flex items-center space-x-2">
-                                        <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleCustomListItem(${l.id}, ${idx})" class="rounded">
-                                        <span class="${item.checked ? 'line-through text-app-muted' : 'text-app-text'}">${item.title}</span>
+                                <div class="flex items-center justify-between">
+                                    <label class="flex items-center space-x-2 truncate mr-2">
+                                        <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleCustomListItem(${l.id}, ${idx})" class="rounded shrink-0">
+                                        <span class="truncate ${item.checked ? 'line-through text-app-muted' : 'text-app-text'}">${item.title}</span>
                                     </label>
-                                    <span class="text-app-muted">€ ${item.cost || 0}</span>
+                                    <span class="text-app-muted shrink-0">€ ${item.cost || 0}</span>
                                 </div>
                             `).join('')}
                         </div>
-                        <button onclick="promptAddItemToCustomList(${l.id})" class="text-xs text-app-primary font-medium">+ Item</button>
+                        <button onclick="promptAddItemToCustomList(${l.id})" class="text-app-primary font-medium">+ Item</button>
                     </div>
                 `;
             }).join('');
@@ -676,8 +689,8 @@
             const fcList = document.getElementById('fixed-costs-list');
             fcList.innerHTML = state.fixedCosts.map(c => `
                 <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl border border-app-border text-xs">
-                    <span class="font-medium text-app-text">${c.title}</span>
-                    <div class="flex items-center space-x-3">
+                    <span class="font-medium text-app-text truncate mr-2">${c.title}</span>
+                    <div class="flex items-center space-x-3 shrink-0">
                         <span class="font-bold text-app-danger">€ ${c.amount}</span>
                         <button onclick="deleteFixedCost(${c.id})" class="text-app-muted hover:text-app-danger"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
@@ -686,16 +699,16 @@
 
             const fContainer = document.getElementById('folders-container');
             fContainer.innerHTML = state.folders.map(f => `
-                <div class="p-4 bg-slate-50 rounded-2xl border border-app-border space-y-3">
+                <div class="p-4 bg-slate-50 rounded-2xl border border-app-border space-y-3 text-xs">
                     <div class="flex justify-between items-center border-b pb-2">
-                        <span class="font-bold text-xs text-app-text"><i class="fa-solid fa-folder text-app-warning mr-2"></i>${f.title}</span>
-                        <button onclick="promptUploadFile(${f.id})" class="text-xs bg-white border border-app-border px-2.5 py-1 rounded-lg">+ Document</button>
+                        <span class="font-bold text-app-text"><i class="fa-solid fa-folder text-app-warning mr-2"></i>${f.title}</span>
+                        <button onclick="promptUploadFile(${f.id})" class="bg-white border border-app-border px-2.5 py-1 rounded-lg">+ Document</button>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         ${f.files.map((file, idx) => `
-                            <div class="p-2 bg-white rounded-xl border border-app-border text-xs flex justify-between items-center">
-                                <span class="font-medium text-app-text truncate">${file.name}</span>
-                                <button onclick="deleteFileFromFolder(${f.id}, ${idx})" class="text-app-muted hover:text-app-danger"><i class="fa-solid fa-xmark"></i></button>
+                            <div class="p-2 bg-white rounded-xl border border-app-border flex justify-between items-center">
+                                <span class="font-medium text-app-text truncate mr-2">${file.name}</span>
+                                <button onclick="deleteFileFromFolder(${f.id}, ${idx})" class="text-app-muted hover:text-app-danger shrink-0"><i class="fa-solid fa-xmark"></i></button>
                             </div>
                         `).join('')}
                     </div>
@@ -734,7 +747,7 @@
             }
             container.innerHTML = state.calories.logs.map(l => `
                 <span class="inline-flex items-center space-x-1.5 px-2.5 py-1 bg-red-50 border border-red-100 rounded-lg text-xs font-semibold text-app-text">
-                    <span>${l.title}</span>
+                    <span class="truncate max-w-[120px]">${l.title}</span>
                     <span class="text-app-danger">(${l.calories} kcal)</span>
                     <button onclick="deleteCalorieLog(${l.id})" class="text-app-muted hover:text-app-danger"><i class="fa-solid fa-xmark"></i></button>
                 </span>
@@ -789,7 +802,7 @@
                 return;
             }
             selector.innerHTML = state.expenseGroups.map(g => `
-                <button onclick="switchExpenseGroup(${g.id})" class="px-3 py-1.5 rounded-xl text-xs font-semibold ${g.id === state.activeGroupId ? 'bg-app-primary text-white' : 'bg-slate-100 text-app-muted'}">${g.name}</button>
+                <button onclick="switchExpenseGroup(${g.id})" class="px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 ${g.id === state.activeGroupId ? 'bg-app-primary text-white' : 'bg-slate-100 text-app-muted'}">${g.name}</button>
             `).join('');
             
             const activeGroup = state.expenseGroups.find(g => g.id === state.activeGroupId) || state.expenseGroups[0];
@@ -802,14 +815,14 @@
             });
             
             details.innerHTML = `
-                <div class="bg-slate-50 p-4 rounded-2xl border border-app-border space-y-3">
+                <div class="bg-slate-50 p-4 rounded-2xl border border-app-border space-y-3 text-xs">
                     <div class="flex justify-between items-center border-b pb-2">
                         <span class="font-bold text-sm text-app-text">${activeGroup.name}</span>
-                        <button onclick="deleteExpenseGroup(${activeGroup.id})" class="text-xs text-app-muted hover:text-app-danger"><i class="fa-solid fa-trash-can"></i></button>
+                        <button onclick="deleteExpenseGroup(${activeGroup.id})" class="text-app-muted hover:text-app-danger"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         ${activeGroup.members.map(m => `
-                            <div class="p-2.5 bg-white rounded-xl border border-app-border flex justify-between items-center text-xs">
+                            <div class="p-2.5 bg-white rounded-xl border border-app-border flex justify-between items-center">
                                 <span class="font-semibold text-app-text">${m}</span>
                                 <span class="font-bold ${(balances[m]||0) >= 0 ? 'text-app-success' : 'text-app-danger'}">€ ${(balances[m]||0).toFixed(2)}</span>
                             </div>
@@ -817,9 +830,9 @@
                     </div>
                     <div class="space-y-1">
                         ${activeGroup.expenses.map(e => `
-                            <div class="flex justify-between items-center p-2 bg-white rounded-xl border border-app-border text-xs">
-                                <span><b>${e.title}</b> (door ${e.paidBy})</span>
-                                <div class="flex items-center space-x-2">
+                            <div class="flex justify-between items-center p-2 bg-white rounded-xl border border-app-border">
+                                <span class="truncate mr-2"><b>${e.title}</b> (door ${e.paidBy})</span>
+                                <div class="flex items-center space-x-2 shrink-0">
                                     <span class="font-bold">€ ${e.amount}</span>
                                     <button onclick="deleteGroupExpense(${activeGroup.id}, ${e.id})" class="text-app-muted hover:text-app-danger"><i class="fa-solid fa-xmark"></i></button>
                                 </div>
@@ -836,18 +849,18 @@
             const html = state.habits.map(h => {
                 const pct = Math.min(100, Math.round((h.current / h.target) * 100));
                 return `
-                    <div class="p-3 bg-slate-50 rounded-xl border border-app-border space-y-2">
-                        <div class="flex justify-between items-center text-xs">
-                            <span class="font-bold text-app-text">${h.title}</span>
-                            <span class="text-app-muted">${h.current} / ${h.target} ${h.unit}</span>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-app-border space-y-2 text-xs">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-app-text truncate mr-2">${h.title}</span>
+                            <span class="text-app-muted shrink-0">${h.current} / ${h.target} ${h.unit}</span>
                         </div>
                         <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                             <div class="bg-app-primary h-full" style="width: ${pct}%"></div>
                         </div>
                         <div class="flex space-x-2">
-                            <button onclick="addHabitProgress(${h.id}, 250)" class="text-[11px] bg-white border px-2 py-0.5 rounded">+250</button>
-                            <button onclick="addHabitProgress(${h.id}, 1000)" class="text-[11px] bg-white border px-2 py-0.5 rounded">+1000</button>
-                            <button onclick="resetHabit(${h.id})" class="text-[11px] text-app-muted ml-auto">Reset</button>
+                            <button onclick="addHabitProgress(${h.id}, 250)" class="bg-white border px-2.5 py-1 rounded-lg">+250</button>
+                            <button onclick="addHabitProgress(${h.id}, 1000)" class="bg-white border px-2.5 py-1 rounded-lg">+1000</button>
+                            <button onclick="resetHabit(${h.id})" class="text-app-muted ml-auto">Reset</button>
                         </div>
                     </div>
                 `;
@@ -966,17 +979,6 @@
 
         function toggleTask(id) { const t = state.tasks.find(x => x.id === id); if(t) t.completed = !t.completed; saveData(); }
         function deleteTask(id) { state.tasks = state.tasks.filter(x => x.id !== id); saveData(); }
-
-        function applyModules() {
-            let hasAny = false;
-            for (const [key, enabled] of Object.entries(state.modules)) {
-                const btn = document.getElementById(`nav-${key}`);
-                if (btn) {
-                    if (enabled) { btn.classList.remove('hidden'); hasAny = true; } else { btn.classList.add('hidden'); }
-                }
-            }
-            document.getElementById('optional-nav-group').classList.toggle('hidden', !hasAny);
-        }
 
         function exportBackup() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
