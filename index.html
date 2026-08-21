@@ -2,9 +2,10 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LIFE — Dagelijkse Planner</title>
     
+    <!-- PWA / App Instellingen -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="LIFE">
@@ -37,436 +38,371 @@
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background-color: #F8F9FA; color: #1F2937; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #F8F9FA; color: #1F2937; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
         .card-shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03); }
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #F1F5F9; }
         ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
-        
-        /* Paywall is standaard overal zichtbaar */
-        #landing-screen { display: flex; }
-        #app-container { display: none; }
     </style>
 </head>
-<body class="flex flex-col md:flex-row h-screen overflow-hidden">
+<body class="flex h-screen overflow-hidden">
 
-    <!-- SCRIPT OM MOGELIJKE BEWAARDE BETAALSTATUS TE CONTROLEREN -->
-    <script>
-        if (localStorage.getItem('LIFE_USER_PAID') === 'true') {
-            document.write('<style>#landing-screen { display: none !important; } #app-container { display: flex !important; }</style>');
-        }
-    </script>
-
-    <!-- LANDING / BETAAL PAYWALL PAGINA -->
-    <div id="landing-screen" class="fixed inset-0 bg-[#f9fafb] z-50 overflow-y-auto items-center justify-center p-4">
-        <div class="max-w-[750px] w-full bg-white border border-gray-200 rounded-2xl p-5 sm:p-10 card-shadow my-auto">
-            <div class="text-center mb-6 sm:mb-8">
-                <span class="inline-block bg-gray-100 text-gray-700 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-3">Exclusief Systeem</span>
-                <h1 class="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-2 tracking-tight">Bouw aan discipline, rust en volledige controle</h1>
-                <p class="text-gray-600 text-sm sm:text-base max-w-[600px] mx-auto">LIFE Assistent is ontworpen voor doeners die structuur willen aanbrengen in hun dagelijkse routines, financiën en doelen zonder afleiding.</p>
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-white border-r border-app-border flex flex-col justify-between hidden md:flex shrink-0 z-20">
+        <div>
+            <div class="p-5 border-b border-app-border flex items-center justify-between">
+                <span class="text-xl font-bold tracking-tight text-app-text">LIFE<span class="text-app-primary">.</span></span>
+                <span class="text-xs font-medium px-2 py-0.5 bg-blue-50 text-app-primary rounded-full">Pro</span>
             </div>
 
-            <div class="text-sm sm:text-base font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Waarom dit systeem werkt</div>
+            <nav class="p-3 space-y-1" id="main-nav">
+                <button onclick="switchTab('vandaag')" id="nav-vandaag" class="w-full flex items-center space-x-3 px-3 py-2.5 bg-app-primary text-white font-medium rounded-xl transition text-left">
+                    <i class="fa-solid fa-sun w-5"></i><span>Vandaag</span>
+                </button>
+                <button onclick="switchTab('taken')" id="nav-taken" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left">
+                    <i class="fa-solid fa-calendar-week w-5"></i><span>Agenda & Taken</span>
+                </button>
+                <button onclick="switchTab('gewoonte')" id="nav-gewoonte" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left">
+                    <i class="fa-solid fa-chart-line w-5"></i><span>Gewoontes & Doelen</span>
+                </button>
+                <button onclick="switchTab('boodschappen')" id="nav-boodschappen" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left">
+                    <i class="fa-solid fa-cart-shopping w-5"></i><span>Boodschappen & Lijsten</span>
+                </button>
+                <button onclick="switchTab('financien')" id="nav-financien" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left">
+                    <i class="fa-solid fa-wallet w-5"></i><span>Geld & Budget</span>
+                </button>
+                <button onclick="switchTab('documenten')" id="nav-documenten" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left">
+                    <i class="fa-solid fa-folder-closed w-5"></i><span>Mappen & Papieren</span>
+                </button>
 
-            <div class="space-y-4 mb-6">
-                <div class="flex items-start gap-3">
-                    <div class="text-lg bg-gray-100 p-2 rounded-lg shrink-0">🎯</div>
-                    <div>
-                        <h3 class="font-semibold text-gray-900 text-xs sm:text-sm">Alles-in-één Overzicht</h3>
-                        <p class="text-gray-600 text-xs">Geen versnipperde apps. Beheer je dagelijkse taken, gewoontes en planning op één centrale plek.</p>
-                    </div>
+                <div id="optional-nav-group" class="pt-3 border-t border-app-border space-y-1 hidden">
+                    <span class="px-3 text-[10px] font-bold text-app-muted uppercase tracking-wider">Extra Modules</span>
+                    <button onclick="switchTab('beleggingen')" id="nav-beleggingen" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left hidden">
+                        <i class="fa-solid fa-arrow-trend-up w-5"></i><span>Beleggingen</span>
+                    </button>
                 </div>
-                <div class="flex items-start gap-3">
-                    <div class="text-lg bg-gray-100 p-2 rounded-lg shrink-0">📈</div>
-                    <div>
-                        <h3 class="font-semibold text-gray-900 text-xs sm:text-sm">Financiële Zekerheid & Budget</h3>
-                        <p class="text-gray-600 text-xs">Houd vaste lasten, maandelijkse uitgaven en spaardoelen haarscherp bij.</p>
-                    </div>
-                </div>
-                <div class="flex items-start gap-3">
-                    <div class="text-lg bg-gray-100 p-2 rounded-lg shrink-0">⚡</div>
-                    <div>
-                        <h3 class="font-semibold text-gray-900 text-xs sm:text-sm">Gezondheid & Prestaties</h3>
-                        <p class="text-gray-600 text-xs">Volg je fysieke doelen, calorieën en dagelijkse gewoontes om structureel te bouwen.</p>
-                    </div>
-                </div>
-            </div>
+            </nav>
+        </div>
 
-            <div class="bg-gray-50 border-l-4 border-gray-900 p-3.5 rounded-r-lg mb-6">
-                <h4 class="font-semibold text-gray-900 text-xs mb-0.5">Geen complexe software, direct resultaat</h4>
-                <p class="text-gray-600 text-xs">Efficiënt, doelgericht en zonder onnodige poespas. Je logt direct in en kunt meteen beginnen.</p>
-            </div>
-
-            <div class="text-center space-y-3">
-                <a href="https://buy.stripe.com/8x2dRa0kU9t506Fcebgfu00" target="_blank" onclick="simulateSuccessfulPayment()" class="block w-full bg-black text-white px-6 py-3.5 rounded-xl font-semibold text-sm hover:bg-gray-800 transition shadow-md text-center">
-                    Krijg direct toegang tot LIFE Assistent
-                </a>
-                <p class="text-[11px] text-gray-400">Flexibel. Je kan altijd opzeggen waar en wanneer je wil.</p>
-                
-                <div class="pt-2">
-                    <button onclick="bypassPaywallForTesting()" class="text-xs text-gray-400 underline hover:text-gray-600">Al betaald? Test app weergave</button>
-                </div>
+        <div class="p-3 border-t border-app-border space-y-2">
+            <div class="flex items-center justify-between text-[11px] text-app-muted px-2 pt-1">
+                <button onclick="exportBackup()" class="hover:text-app-primary"><i class="fa-solid fa-download mr-1"></i>Backup</button>
+                <button onclick="importBackupPrompt()" class="hover:text-app-primary"><i class="fa-solid fa-upload mr-1"></i>Herstel</button>
             </div>
         </div>
-    </div>
+    </aside>
 
-    <!-- MAIN APP CONTAINER -->
-    <div id="app-container" class="flex flex-col md:flex-row h-screen w-screen overflow-hidden">
-        
-        <!-- PC SIDEBAR -->
-        <aside class="w-64 bg-white border-r border-app-border hidden md:flex flex-col justify-between shrink-0 z-20">
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-full overflow-y-auto">
+        <header class="bg-white border-b border-app-border px-6 py-4 flex items-center justify-between sticky top-0 z-10 shrink-0">
             <div>
-                <div class="p-5 border-b border-app-border flex items-center justify-between">
-                    <span class="text-xl font-bold tracking-tight text-app-text">LIFE<span class="text-app-primary">.</span></span>
-                    <span class="text-xs font-medium px-2 py-0.5 bg-blue-50 text-app-primary rounded-full">Pro</span>
-                </div>
-
-                <nav class="p-3 space-y-1" id="main-nav-pc">
-                    <button onclick="switchTab('vandaag')" id="nav-pc-vandaag" class="w-full flex items-center space-x-3 px-3 py-2.5 bg-app-primary text-white font-medium rounded-xl transition text-left text-sm">
-                        <i class="fa-solid fa-sun w-5"></i><span>Vandaag</span>
-                    </button>
-                    <button onclick="switchTab('taken')" id="nav-pc-taken" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
-                        <i class="fa-solid fa-calendar-week w-5"></i><span>Agenda & Taken</span>
-                    </button>
-                    <button onclick="switchTab('gewoonte')" id="nav-pc-gewoonte" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
-                        <i class="fa-solid fa-chart-line w-5"></i><span>Gewoontes & Doelen</span>
-                    </button>
-                    <button onclick="switchTab('boodschappen')" id="nav-pc-boodschappen" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
-                        <i class="fa-solid fa-cart-shopping w-5"></i><span>Boodschappen & Lijsten</span>
-                    </button>
-                    <button onclick="switchTab('financien')" id="nav-pc-financien" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
-                        <i class="fa-solid fa-wallet w-5"></i><span>Geld & Budget</span>
-                    </button>
-                    <button onclick="switchTab('documenten')" id="nav-pc-documenten" class="w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm">
-                        <i class="fa-solid fa-folder-closed w-5"></i><span>Mappen & Papieren</span>
-                    </button>
-                </nav>
+                <h1 id="page-title" class="text-lg font-bold text-app-text">Vandaag</h1>
+                <p id="current-date" class="text-xs text-app-muted font-medium"></p>
             </div>
+        </header>
 
-            <div class="p-3 border-t border-app-border space-y-2">
-                <div class="flex items-center justify-between text-[11px] text-app-muted px-2 pt-1">
-                    <button onclick="exportBackup()" class="hover:text-app-primary"><i class="fa-solid fa-download mr-1"></i>Backup</button>
-                    <button onclick="importBackupPrompt()" class="hover:text-app-primary"><i class="fa-solid fa-upload mr-1"></i>Herstel</button>
-                    <button onclick="lockAppAgain()" class="text-app-danger hover:underline">Vergrendel</button>
-                </div>
-            </div>
-        </aside>
+        <div class="p-6 max-w-6xl w-full mx-auto space-y-6">
 
-        <!-- MAIN CONTENT CONTAINER -->
-        <main class="flex-1 flex flex-col h-full overflow-y-auto">
-            <!-- HEADER VOOR DESKTOP EN MOBIEL -->
-            <header class="bg-white border-b border-app-border px-4 py-3 flex items-center justify-between sticky top-0 z-30 shrink-0">
-                <div class="flex items-center space-x-3">
-                    <button onclick="toggleMobileMenu()" class="md:hidden text-gray-700 text-lg p-1.5 focus:outline-none">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
-                    <div>
-                        <h1 id="page-title" class="text-base sm:text-lg font-bold text-app-text">Vandaag</h1>
-                        <p id="current-date" class="text-[10px] sm:text-xs text-app-muted font-medium"></p>
+            <!-- TAB 1: VANDAAG -->
+            <div id="tab-vandaag" class="tab-panel active space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow">
+                        <span class="text-xs font-medium text-app-muted">Openstaande Taken</span>
+                        <p class="text-2xl font-bold text-app-text mt-1" id="dash-open-tasks">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow">
+                        <span class="text-xs font-medium text-app-muted">Gewoontes Afgevinkt</span>
+                        <p class="text-2xl font-bold text-app-success mt-1" id="dash-completed-habits">0 / 0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow">
+                        <span class="text-xs font-medium text-app-muted">Nog over deze maand</span>
+                        <p class="text-2xl font-bold text-app-primary mt-1" id="dash-remaining-budget">€ 0</p>
+                    </div>
+                    
+                    <!-- CALORIE WIDGET DASHBOARD -->
+                    <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow flex flex-col justify-between">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-medium text-app-muted"><i class="fa-solid fa-fire text-app-danger mr-1"></i>Calorie Tracker</span>
+                            <button onclick="promptAddCalorieLog()" class="text-[11px] text-app-primary font-bold hover:underline">+ Log</button>
+                        </div>
+                        <div class="mt-2">
+                            <div class="flex justify-between items-baseline mb-1">
+                                <span class="text-xl font-bold text-app-text" id="dash-calories-text">0 / 2500</span>
+                                <span class="text-[10px] font-bold text-app-muted">kcal</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                <div id="dash-calories-bar" class="bg-app-danger h-full transition-all" style="width: 0%"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="flex items-center space-x-2">
-                    <button onclick="promptAddTask()" class="bg-app-primary text-white text-xs px-3 py-1.5 rounded-lg font-semibold">+ Taak</button>
-                </div>
-            </header>
 
-            <!-- MOBIEL MENU DROPDOWN -->
-            <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-app-border p-3 space-y-1 shadow-md z-20">
-                <button onclick="switchTab('vandaag'); toggleMobileMenu();" class="w-full flex items-center space-x-3 px-3 py-2 text-app-text text-xs font-semibold rounded-lg hover:bg-slate-50">
-                    <i class="fa-solid fa-sun w-5 text-app-primary"></i><span>Vandaag</span>
-                </button>
-                <button onclick="switchTab('taken'); toggleMobileMenu();" class="w-full flex items-center space-x-3 px-3 py-2 text-app-text text-xs font-semibold rounded-lg hover:bg-slate-50">
-                    <i class="fa-solid fa-calendar-week w-5 text-app-primary"></i><span>Agenda & Taken</span>
-                </button>
-                <button onclick="switchTab('gewoonte'); toggleMobileMenu();" class="w-full flex items-center space-x-3 px-3 py-2 text-app-text text-xs font-semibold rounded-lg hover:bg-slate-50">
-                    <i class="fa-solid fa-chart-line w-5 text-app-primary"></i><span>Gewoontes & Doelen</span>
-                </button>
-                <button onclick="switchTab('boodschappen'); toggleMobileMenu();" class="w-full flex items-center space-x-3 px-3 py-2 text-app-text text-xs font-semibold rounded-lg hover:bg-slate-50">
-                    <i class="fa-solid fa-cart-shopping w-5 text-app-primary"></i><span>Boodschappen & Lijsten</span>
-                </button>
-                <button onclick="switchTab('financien'); toggleMobileMenu();" class="w-full flex items-center space-x-3 px-3 py-2 text-app-text text-xs font-semibold rounded-lg hover:bg-slate-50">
-                    <i class="fa-solid fa-wallet w-5 text-app-primary"></i><span>Geld & Budget</span>
-                </button>
-                <button onclick="switchTab('documenten'); toggleMobileMenu();" class="w-full flex items-center space-x-3 px-3 py-2 text-app-text text-xs font-semibold rounded-lg hover:bg-slate-50">
-                    <i class="fa-solid fa-folder-closed w-5 text-app-primary"></i><span>Mappen & Papieren</span>
-                </button>
-                <div class="pt-2 border-t flex justify-between text-[11px] text-app-muted">
-                    <button onclick="exportBackup()"><i class="fa-solid fa-download mr-1"></i>Backup</button>
-                    <button onclick="importBackupPrompt()"><i class="fa-solid fa-upload mr-1"></i>Herstel</button>
-                    <button onclick="lockAppAgain()" class="text-app-danger">Vergrendel</button>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                        <div class="flex justify-between items-center border-b border-app-border pb-3">
+                            <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-check-circle text-app-primary mr-2"></i>Taken voor Vandaag</h2>
+                            <button onclick="switchTab('taken')" class="text-xs text-app-primary font-medium hover:underline">Bekijk Agenda</button>
+                        </div>
+                        <div id="vandaag-tasks-list" class="space-y-2"></div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                        <div class="flex justify-between items-center border-b border-app-border pb-3">
+                            <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-fire text-app-warning mr-2"></i>Voortgang Gewoontes</h2>
+                            <button onclick="switchTab('gewoonte')" class="text-xs text-app-primary font-medium hover:underline">Beheer Gewoontes</button>
+                        </div>
+                        <div id="vandaag-habits-list" class="space-y-3"></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- INHOUD PER TABBLAD -->
-            <div class="p-3 sm:p-6 max-w-6xl w-full mx-auto space-y-4">
-                
-                <!-- TAB 1: VANDAAG -->
-                <div id="tab-vandaag" class="tab-panel active space-y-4">
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
-                        <div class="bg-white p-3 rounded-2xl border border-app-border card-shadow">
-                            <span class="text-[10px] sm:text-xs font-medium text-app-muted">Open Taken</span>
-                            <p class="text-lg sm:text-2xl font-bold text-app-text mt-0.5" id="dash-open-tasks">0</p>
+            <!-- TAB 2: TAKEN & AGENDA -->
+            <div id="tab-taken" class="tab-panel space-y-6">
+                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                        <div>
+                            <h2 class="font-bold text-app-text">Weekagenda (00:00 - 23:59)</h2>
+                            <p class="text-xs text-app-muted">Plan je afspraken in de week</p>
                         </div>
-                        <div class="bg-white p-3 rounded-2xl border border-app-border card-shadow">
-                            <span class="text-[10px] sm:text-xs font-medium text-app-muted">Gewoontes</span>
-                            <p class="text-lg sm:text-2xl font-bold text-app-success mt-0.5" id="dash-completed-habits">0 / 0</p>
-                        </div>
-                        <div class="bg-white p-3 rounded-2xl border border-app-border card-shadow">
-                            <span class="text-[10px] sm:text-xs font-medium text-app-muted">Budget Over</span>
-                            <p class="text-lg sm:text-2xl font-bold text-app-primary mt-0.5" id="dash-remaining-budget">€ 0</p>
-                        </div>
-                        <div class="bg-white p-3 rounded-2xl border border-app-border card-shadow flex flex-col justify-between col-span-2 sm:col-span-1">
-                            <div class="flex justify-between items-center">
-                                <span class="text-[10px] sm:text-xs font-medium text-app-muted"><i class="fa-solid fa-fire text-app-danger mr-1"></i>Calorieën</span>
-                                <button onclick="promptAddCalorieLog()" class="text-[10px] text-app-primary font-bold hover:underline">+ Log</button>
-                            </div>
-                            <div class="mt-1">
-                                <div class="flex justify-between items-baseline mb-1">
-                                    <span class="text-base sm:text-xl font-bold text-app-text" id="dash-calories-text">0 / 2500</span>
-                                    <span class="text-[10px] font-bold text-app-muted">kcal</span>
-                                </div>
-                                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                                    <div id="dash-calories-bar" class="bg-app-danger h-full transition-all" style="width: 0%"></div>
-                                </div>
-                            </div>
-                        </div>
+                        <button onclick="openAddEventModal()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Afspraak Inplannen</button>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-white rounded-2xl p-4 border border-app-border card-shadow space-y-3">
-                            <div class="flex justify-between items-center border-b border-app-border pb-2">
-                                <h2 class="font-bold text-app-text text-xs sm:text-sm"><i class="fa-solid fa-check-circle text-app-primary mr-1.5"></i>Taken voor Vandaag</h2>
-                                <button onclick="switchTab('taken')" class="text-xs text-app-primary font-medium hover:underline">Agenda</button>
-                            </div>
-                            <div id="vandaag-tasks-list" class="space-y-2"></div>
+                    <div class="overflow-x-auto">
+                        <div class="min-w-[700px] grid grid-cols-8 gap-1 bg-slate-100 p-1 rounded-xl border border-app-border text-center text-xs font-semibold">
+                            <div class="py-2 text-app-muted">Tijd</div>
+                            <div class="py-2 bg-white rounded-lg">Maandag</div>
+                            <div class="py-2 bg-white rounded-lg">Dinsdag</div>
+                            <div class="py-2 bg-white rounded-lg">Woensdag</div>
+                            <div class="py-2 bg-white rounded-lg">Donderdag</div>
+                            <div class="py-2 bg-white rounded-lg">Vrijdag</div>
+                            <div class="py-2 bg-white rounded-lg">Zaterdag</div>
+                            <div class="py-2 bg-white rounded-lg">Zondag</div>
                         </div>
-
-                        <div class="bg-white rounded-2xl p-4 border border-app-border card-shadow space-y-3">
-                            <div class="flex justify-between items-center border-b border-app-border pb-2">
-                                <h2 class="font-bold text-app-text text-xs sm:text-sm"><i class="fa-solid fa-fire text-app-warning mr-1.5"></i>Voortgang Gewoontes</h2>
-                                <button onclick="switchTab('gewoonte')" class="text-xs text-app-primary font-medium hover:underline">Beheer</button>
-                            </div>
-                            <div id="vandaag-habits-list" class="space-y-2"></div>
-                        </div>
+                        <div id="calendar-grid" class="min-w-[700px] h-96 overflow-y-auto space-y-1 mt-1"></div>
                     </div>
                 </div>
 
-                <!-- TAB 2: TAKEN & AGENDA -->
-                <div id="tab-taken" class="tab-panel space-y-4">
-                    <div class="bg-white rounded-2xl p-4 border border-app-border card-shadow space-y-3">
-                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                            <div>
-                                <h2 class="font-bold text-app-text text-sm">Weekagenda</h2>
-                                <p class="text-[11px] text-app-muted">Plan je weekinrichting overzichtelijk</p>
-                            </div>
-                            <button onclick="openAddEventModal()" class="w-full sm:w-auto bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Afspraak Inplannen</button>
-                        </div>
-
-                        <div class="overflow-x-auto pb-2">
-                            <div class="min-w-[650px] grid grid-cols-8 gap-1 bg-slate-100 p-1 rounded-xl border border-app-border text-center text-[11px] font-semibold">
-                                <div class="py-1.5 text-app-muted">Tijd</div>
-                                <div class="py-1.5 bg-white rounded-lg">Ma</div>
-                                <div class="py-1.5 bg-white rounded-lg">Di</div>
-                                <div class="py-1.5 bg-white rounded-lg">Wo</div>
-                                <div class="py-1.5 bg-white rounded-lg">Do</div>
-                                <div class="py-1.5 bg-white rounded-lg">Vr</div>
-                                <div class="py-1.5 bg-white rounded-lg">Za</div>
-                                <div class="py-1.5 bg-white rounded-lg">Zo</div>
-                            </div>
-                            <div id="calendar-grid" class="min-w-[650px] h-72 sm:h-96 overflow-y-auto space-y-1 mt-1"></div>
+                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                        <h2 class="font-bold text-app-text text-sm">Losse Takenlijst</h2>
+                        <div class="flex space-x-2">
+                            <button onclick="openBulkTaskModal()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3.5 py-2 rounded-xl font-medium transition flex items-center space-x-1.5">
+                                <i class="fa-solid fa-list-check text-app-primary"></i><span>Snel Taken Invoeren</span>
+                            </button>
+                            <button onclick="promptAddTask()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Nieuwe Taak</button>
                         </div>
                     </div>
-
-                    <div class="bg-white rounded-2xl p-4 border border-app-border card-shadow space-y-3">
-                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                            <h2 class="font-bold text-app-text text-sm">Losse Takenlijst</h2>
-                            <div class="flex gap-2">
-                                <button onclick="openBulkTaskModal()" class="flex-1 sm:flex-none bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3 py-2 rounded-xl font-medium transition flex items-center justify-center space-x-1">
-                                    <i class="fa-solid fa-list-check text-app-primary"></i><span>Snel Invoeren</span>
-                                </button>
-                                <button onclick="promptAddTask()" class="flex-1 sm:flex-none bg-app-primary text-white text-xs px-3 py-2 rounded-xl font-medium">+ Taak</button>
-                            </div>
-                        </div>
-                        <div id="full-tasks-list" class="space-y-2"></div>
-                    </div>
-                </div>
-
-                <!-- TAB 3: GEWOONTES & DOELEN -->
-                <div id="tab-gewoonte" class="tab-panel space-y-4">
-                    <div class="bg-white rounded-2xl p-4 border border-app-border card-shadow space-y-3">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h2 class="font-bold text-app-text text-sm">Gewoontes Tracker</h2>
-                                <p class="text-[11px] text-app-muted">Volg je dagelijkse voortgang</p>
-                            </div>
-                            <button onclick="promptAddAdvancedHabit()" class="bg-app-primary text-white text-xs px-3 py-2 rounded-xl font-medium">+ Gewoonte</button>
-                        </div>
-                        <div id="full-habits-list" class="space-y-3 pt-1"></div>
-                    </div>
-                </div>
-
-                <!-- TAB 4: BOODSCHAPPEN & LIJSTEN -->
-                <div id="tab-boodschappen" class="tab-panel space-y-4">
-                    <div class="bg-white rounded-2xl p-4 border border-app-border card-shadow space-y-3">
-                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-app-border pb-2">
-                            <div class="flex items-center space-x-2">
-                                <i class="fa-solid fa-fire text-app-danger text-base"></i>
-                                <div>
-                                    <h2 class="font-bold text-app-text text-sm">Calorie Tracker Widget</h2>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between sm:justify-end space-x-2">
-                                <button onclick="promptSetCalorieTarget()" class="text-xs text-app-muted hover:text-app-text">Doel aanpassen</button>
-                                <button onclick="promptAddCalorieLog()" class="bg-app-danger hover:bg-red-600 text-white text-xs px-3 py-1 rounded-xl font-medium">+ Loggen</button>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
-                            <div class="space-y-1">
-                                <div class="flex justify-between text-xs font-bold">
-                                    <span class="text-app-text">Totaal Vandaag</span>
-                                    <span id="boodschap-cal-text">0 / 2500 kcal</span>
-                                </div>
-                                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                                    <div id="boodschap-cal-bar" class="bg-app-danger h-full transition-all" style="width: 0%"></div>
-                                </div>
-                            </div>
-                            <div class="col-span-2 space-y-1.5">
-                                <span class="text-[11px] font-semibold text-app-muted block">Gelogde maaltijden:</span>
-                                <div id="calorie-logs-list" class="flex flex-wrap gap-1.5"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-white rounded-2xl p-4 border border-app-border card-shadow space-y-3">
-                            <div class="flex justify-between items-center">
-                                <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-basket-shopping text-app-primary mr-1.5"></i>Boodschappenlijst</h2>
-                                <button onclick="clearCheckedGroceries()" class="text-[11px] text-app-muted hover:text-app-danger">Wis afgevinkt</button>
-                            </div>
-                            <div class="flex space-x-1.5">
-                                <input id="grocery-input" type="text" placeholder="Item..." class="flex-1 text-xs bg-app-bg border border-app-border rounded-xl px-3 py-2 focus:outline-none">
-                                <input id="grocery-calories-input" type="number" placeholder="kcal" class="w-16 text-xs bg-app-bg border border-app-border rounded-xl px-2 py-2 focus:outline-none">
-                                <button onclick="addGrocery()" class="bg-app-primary text-white text-xs px-3 py-2 rounded-xl font-medium shrink-0">Voeg toe</button>
-                            </div>
-                            <div id="full-groceries-list" class="space-y-1.5"></div>
-                        </div>
-
-                        <div class="bg-white rounded-2xl p-4 border border-app-border card-shadow space-y-3">
-                            <div class="flex justify-between items-center">
-                                <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-utensils text-app-warning mr-1.5"></i>Mijn Recepten</h2>
-                                <button onclick="promptAddRecipe()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-2.5 py-1.5 rounded-xl font-medium">+ Recept</button>
-                            </div>
-                            <div id="recipes-list" class="space-y-2"></div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-2xl p-4 border border-app-border card-shadow space-y-3">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-list-check text-app-success mr-1.5"></i>Speciale Lijsten</h2>
-                            </div>
-                            <button onclick="promptCreateCustomList()" class="bg-app-primary text-white text-xs px-3 py-1.5 rounded-xl font-medium">+ Lijst</button>
-                        </div>
-                        <div id="custom-lists-container" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
-                    </div>
-                </div>
-
-                <!-- TAB 5: GELD & BUDGET -->
-                <div id="tab-financien" class="tab-panel space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                        <div class="bg-white p-3.5 rounded-2xl border border-app-border card-shadow">
-                            <span class="text-[11px] text-app-muted font-medium">Inkomsten p/m</span>
-                            <p class="text-lg font-bold text-app-success mt-0.5" id="fin-income">€ 0</p>
-                            <button onclick="promptSetIncome()" class="text-[10px] text-app-primary font-medium hover:underline mt-0.5">Aanpassen</button>
-                        </div>
-                        <div class="bg-white p-3.5 rounded-2xl border border-app-border card-shadow">
-                            <span class="text-[11px] text-app-muted font-medium">Vaste Lasten p/m</span>
-                            <p class="text-lg font-bold text-app-danger mt-0.5" id="fin-expenses">€ 0</p>
-                        </div>
-                        <div class="bg-white p-3.5 rounded-2xl border border-app-border card-shadow bg-blue-50/50">
-                            <span class="text-[11px] text-app-primary font-bold">Nog Over Deze Maand</span>
-                            <p class="text-xl font-black text-app-text mt-0.5" id="fin-remaining">€ 0</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-2xl p-4 border border-app-border card-shadow space-y-3">
-                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                            <div>
-                                <h2 class="font-bold text-app-text text-sm"><i class="fa-solid fa-users text-app-primary mr-1.5"></i>Groepsuitgaven & Balans</h2>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="promptCreateGroup()" class="flex-1 sm:flex-none bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3 py-1.5 rounded-xl font-medium">+ Groep</button>
-                                <button onclick="promptAddExpenseToGroup()" class="flex-1 sm:flex-none bg-app-primary text-white text-xs px-3 py-1.5 rounded-xl font-medium">+ Uitgave</button>
-                            </div>
-                        </div>
-
-                        <div id="group-selector-container" class="flex space-x-2 overflow-x-auto pb-1"></div>
-                        <div id="group-details-container" class="space-y-3 pt-1"></div>
-                    </div>
-
-                    <div class="bg-white rounded-2xl p-4 border border-app-border card-shadow space-y-3">
-                        <div class="flex justify-between items-center">
-                            <h2 class="font-bold text-app-text text-sm">Vaste Lasten</h2>
-                            <button onclick="promptAddFixedCost()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3 py-1.5 rounded-xl font-medium">+ Vaste Last</button>
-                        </div>
-                        <div id="fixed-costs-list" class="space-y-2"></div>
-                    </div>
-                </div>
-
-                <!-- TAB 6: MAPPEN & PAPIEREN -->
-                <div id="tab-documenten" class="tab-panel space-y-4">
-                    <div class="bg-white rounded-2xl p-4 border border-app-border card-shadow space-y-3">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h2 class="font-bold text-app-text text-sm">Mappen & Documenten</h2>
-                            </div>
-                            <button onclick="promptCreateFolder()" class="bg-app-primary text-white text-xs px-3 py-1.5 rounded-xl font-medium">+ Map</button>
-                        </div>
-                        <div id="folders-container" class="space-y-4 pt-1"></div>
-                    </div>
+                    <div id="full-tasks-list" class="space-y-2"></div>
                 </div>
             </div>
-        </main>
-    </div>
 
-    <!-- BULK TAKEN MODAL -->
-    <div id="bulk-task-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+            <!-- TAB 3: GEWOONTES & DOELEN -->
+            <div id="tab-gewoonte" class="tab-panel space-y-6">
+                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="font-bold text-app-text">Gewoontes met Voortgang Tracker</h2>
+                            <p class="text-xs text-app-muted">Blijf je dagelijkse voortgang visueel opvolgen</p>
+                        </div>
+                        <button onclick="promptAddAdvancedHabit()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Nieuwe Gewoonte</button>
+                    </div>
+                    <div id="full-habits-list" class="space-y-4 pt-2"></div>
+                </div>
+            </div>
+
+            <!-- TAB 4: BOODSCHAPPEN & LIJSTEN -->
+            <div id="tab-boodschappen" class="tab-panel space-y-6">
+
+                <!-- CALORIE TRACKER WIDGET -->
+                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                    <div class="flex justify-between items-center border-b border-app-border pb-3">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-fire text-app-danger text-lg"></i>
+                            <div>
+                                <h2 class="font-bold text-app-text text-sm">Calorie Tracker Widget</h2>
+                                <p class="text-xs text-app-muted">Volg je dagelijkse inname en beheer gelogde maaltijden</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button onclick="promptSetCalorieTarget()" class="text-xs text-app-muted hover:text-app-text">Doel aanpassen</button>
+                            <button onclick="promptAddCalorieLog()" class="bg-app-danger hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded-xl font-medium">+ Calorieën Loggen</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs font-bold">
+                                <span class="text-app-text">Totaal Vandaag</span>
+                                <span id="boodschap-cal-text">0 / 2500 kcal</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                                <div id="boodschap-cal-bar" class="bg-app-danger h-full transition-all" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="col-span-2 space-y-2">
+                            <span class="text-xs font-semibold text-app-muted block">Gelogde maaltijden & producten vandaag (klik om te schrappen):</span>
+                            <div id="calorie-logs-list" class="flex flex-wrap gap-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- BOODSCHAPPEN -->
+                    <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h2 class="font-bold text-app-text"><i class="fa-solid fa-basket-shopping text-app-primary mr-2"></i>Boodschappenlijst</h2>
+                            <button onclick="clearCheckedGroceries()" class="text-xs text-app-muted hover:text-app-danger">Afgevinkt wis</button>
+                        </div>
+                        <div class="flex space-x-2">
+                            <input id="grocery-input" type="text" placeholder="Item toevoegen..." class="flex-1 text-xs bg-app-bg border border-app-border rounded-xl px-3 py-2 focus:outline-none" onkeypress="if(event.key==='Enter') addGrocery()">
+                            <input id="grocery-calories-input" type="number" placeholder="kcal" class="w-16 text-xs bg-app-bg border border-app-border rounded-xl px-2 py-2 focus:outline-none">
+                            <button onclick="addGrocery()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">Toevoegen</button>
+                        </div>
+                        <div id="full-groceries-list" class="space-y-2"></div>
+                    </div>
+
+                    <!-- RECEPTEN -->
+                    <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h2 class="font-bold text-app-text"><i class="fa-solid fa-utensils text-app-warning mr-2"></i>Mijn Recepten</h2>
+                            <button onclick="promptAddRecipe()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3 py-2 rounded-xl font-medium">+ Recept</button>
+                        </div>
+                        <div id="recipes-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- ALGEMENE LIJSTEN -->
+                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="font-bold text-app-text"><i class="fa-solid fa-list-check text-app-success mr-2"></i>Speciale Lijsten & Aankoop Trackers</h2>
+                            <p class="text-xs text-app-muted">Bijvoorbeeld: Spullen gekocht voor ons nieuwe huis</p>
+                        </div>
+                        <button onclick="promptCreateCustomList()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Nieuwe Lijst</button>
+                    </div>
+                    <div id="custom-lists-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </div>
+            </div>
+
+            <!-- TAB 5: GELD & BUDGET -->
+            <div id="tab-financien" class="tab-panel space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow">
+                        <span class="text-xs text-app-muted font-medium">Inkomsten p/m</span>
+                        <p class="text-xl font-bold text-app-success mt-1" id="fin-income">€ 0</p>
+                        <button onclick="promptSetIncome()" class="text-[11px] text-app-primary font-medium hover:underline mt-1">Aanpassen</button>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow">
+                        <span class="text-xs text-app-muted font-medium">Vaste Lasten p/m</span>
+                        <p class="text-xl font-bold text-app-danger mt-1" id="fin-expenses">€ 0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-app-border card-shadow bg-blue-50/50">
+                        <span class="text-xs text-app-primary font-bold">Nog Over Deze Maand</span>
+                        <p class="text-2xl font-black text-app-text mt-1" id="fin-remaining">€ 0</p>
+                    </div>
+                </div>
+
+                <!-- GEZAMENLIJKE GROEPSUITGAVEN -->
+                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                        <div>
+                            <h2 class="font-bold text-app-text"><i class="fa-solid fa-users text-app-primary mr-2"></i>Groepsuitgaven & Balans</h2>
+                            <p class="text-xs text-app-muted">Maak een groep aan, voer uitgaven in en zie meteen wie wat moet verrekenen.</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="promptCreateGroup()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3 py-2 rounded-xl font-medium">+ Nieuwe Groep</button>
+                            <button onclick="promptAddExpenseToGroup()" class="bg-app-primary text-white text-xs px-3 py-2 rounded-xl font-medium">+ Uitgave Toevoegen</button>
+                        </div>
+                    </div>
+
+                    <div id="group-selector-container" class="flex space-x-2 overflow-x-auto pb-1"></div>
+                    <div id="group-details-container" class="space-y-4 pt-2"></div>
+                </div>
+
+                <!-- VASTE LASTEN -->
+                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h2 class="font-bold text-app-text">Vaste Lasten</h2>
+                        <button onclick="promptAddFixedCost()" class="bg-slate-100 hover:bg-slate-200 text-app-text text-xs px-3 py-2 rounded-xl font-medium">+ Vaste Last</button>
+                    </div>
+                    <div id="fixed-costs-list" class="space-y-2"></div>
+                </div>
+            </div>
+
+            <!-- TAB 6: MAPPEN & PAPIEREN -->
+            <div id="tab-documenten" class="tab-panel space-y-6">
+                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="font-bold text-app-text">Mappen & Documenten Opslag</h2>
+                            <p class="text-xs text-app-muted">Organiseer je facturen en garanties per categorie</p>
+                        </div>
+                        <button onclick="promptCreateFolder()" class="bg-app-primary text-white text-xs px-3.5 py-2 rounded-xl font-medium">+ Nieuwe Map</button>
+                    </div>
+                    <div id="folders-container" class="space-y-6 pt-2"></div>
+                </div>
+            </div>
+
+            <!-- OPTIONELE TAB: BELEGGINGEN -->
+            <div id="tab-beleggingen" class="tab-panel space-y-6">
+                <div class="bg-white rounded-2xl p-5 border border-app-border card-shadow space-y-4">
+                    <h2 class="font-bold text-app-text">Beleggingen Tracker</h2>
+                    <p class="text-xs text-app-muted">Optionele tracker voor je portfolio en lange termijn doelen.</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- BULK TAKEN INVOEREN MODAL -->
+    <div id="bulk-task-modal" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-5 card-shadow space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="font-bold text-app-text text-sm"><i class="fa-solid fa-list-check text-app-primary mr-2"></i>Snel Taken Invoeren</h3>
+                <h3 class="font-bold text-app-text text-base"><i class="fa-solid fa-list-check text-app-primary mr-2"></i>Snel Taken Invoeren</h3>
                 <button onclick="closeBulkTaskModal()" class="text-app-muted hover:text-app-text"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <textarea id="bulk-task-input" rows="5" placeholder="Taak 1&#10;Taak 2" class="w-full text-xs border rounded-xl p-3 bg-slate-50 border-app-border focus:outline-none"></textarea>
+            
+            <p class="text-xs text-app-muted">Typ of plak hier je taken (één taak per regel):</p>
+            
+            <textarea id="bulk-task-input" rows="6" placeholder="Afwas doen&#10;Strijk doen&#10;Met de hond wandelen&#10;Auto wassen" class="w-full text-xs border rounded-xl p-3 bg-slate-50 border-app-border focus:outline-none font-sans leading-relaxed"></textarea>
+
             <div class="flex space-x-2 pt-2">
                 <button onclick="closeBulkTaskModal()" class="w-1/2 py-2.5 bg-slate-100 text-app-muted text-xs font-semibold rounded-xl">Annuleren</button>
-                <button onclick="saveBulkTasks()" class="w-1/2 py-2.5 bg-app-primary text-white text-xs font-semibold rounded-xl">Toevoegen</button>
+                <button onclick="saveBulkTasks()" class="w-1/2 py-2.5 bg-app-primary text-white text-xs font-semibold rounded-xl hover:bg-app-primaryHover transition">Alles Toevoegen</button>
             </div>
         </div>
     </div>
 
-    <!-- AFSPRAAK MODAL -->
-    <div id="event-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-5 card-shadow space-y-3">
-            <h3 class="font-bold text-app-text text-sm">Afspraak Inplannen</h3>
-            <div class="space-y-2">
+    <!-- AFSPRAAK TOEVOEGEN MODAL -->
+    <div id="event-modal" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 card-shadow space-y-4">
+            <h3 class="font-bold text-app-text text-base">Afspraak Inplannen</h3>
+            
+            <div class="space-y-3">
                 <div>
-                    <label class="text-[11px] font-semibold text-app-muted block mb-1">Titel</label>
-                    <input type="text" id="event-title-input" placeholder="bijv. Tandarts" class="w-full text-xs border rounded-xl p-2.5 bg-slate-50 border-app-border focus:outline-none">
+                    <label class="text-xs font-semibold text-app-muted block mb-1">Titel / Omschrijving</label>
+                    <input type="text" id="event-title-input" placeholder="bijv. Tandarts, Vergadering" class="w-full text-xs border rounded-xl p-2.5 bg-slate-50 border-app-border focus:outline-none">
                 </div>
                 <div>
-                    <label class="text-[11px] font-semibold text-app-muted block mb-1">Dag</label>
+                    <label class="text-xs font-semibold text-app-muted block mb-1">Dag van de week</label>
                     <select id="event-day-select" class="w-full text-xs border rounded-xl p-2.5 bg-slate-50 border-app-border focus:outline-none">
-                        <option value="0">Maandag</option><option value="1">Dinsdag</option><option value="2">Woensdag</option><option value="3">Donderdag</option><option value="4">Vrijdag</option><option value="5">Zaterdag</option><option value="6">Zondag</option>
+                        <option value="0">Maandag</option>
+                        <option value="1">Dinsdag</option>
+                        <option value="2">Woensdag</option>
+                        <option value="3">Donderdag</option>
+                        <option value="4">Vrijdag</option>
+                        <option value="5">Zaterdag</option>
+                        <option value="6">Zondag</option>
                     </select>
                 </div>
                 <div>
-                    <label class="text-[11px] font-semibold text-app-muted block mb-1">Tijdstip</label>
+                    <label class="text-xs font-semibold text-app-muted block mb-1">Tijdstip (bijv. 15:30 of 15:45)</label>
                     <input type="time" id="event-time-input" value="09:00" class="w-full text-xs border rounded-xl p-2.5 bg-slate-50 border-app-border focus:outline-none">
                 </div>
             </div>
+
             <div class="flex space-x-2 pt-2">
                 <button onclick="closeEventModal()" class="w-1/2 py-2 bg-slate-100 text-app-muted text-xs font-medium rounded-xl">Annuleren</button>
                 <button onclick="saveCalendarEvent()" class="w-1/2 py-2 bg-app-primary text-white text-xs font-medium rounded-xl">Opslaan</button>
@@ -487,10 +423,10 @@
             calories: { current: 0, target: 2500, logs: [] },
             groceries: [],
             recipes: [
-                { id: 1, title: 'Pasta Bolognese', calories: 650, ingredients: [] }
+                { id: 1, title: 'Pasta Bolognese', calories: 650, ingredients: [{ name: 'Spaghetti 500g', kcal: 350 }, { name: 'Gehakt 500g', kcal: 250 }, { name: 'Tomatensaus', kcal: 50 }] }
             ],
             customLists: [
-                { id: 1, title: 'Uitzet Nieuw Huis', items: [{ title: 'Koffiemachine', cost: 120, checked: true }] }
+                { id: 1, title: 'Uitzet Nieuw Huis', items: [{ title: 'Koffiemachine', cost: 120, checked: true }, { title: 'Zetel', cost: 850, checked: false }] }
             ],
             income: 2500,
             fixedCosts: [{ id: 1, title: 'Huur/Hypotheek', amount: 850 }],
@@ -499,35 +435,19 @@
                     id: 1,
                     name: 'Samen Wonen',
                     members: ['Ik', 'Partner'],
-                    expenses: [{ id: 101, title: 'Boodschappen', amount: 120, paidBy: 'Ik', forMembers: ['Ik', 'Partner'] }]
+                    expenses: [
+                        { id: 101, title: 'Wekelijkse Boodschappen', amount: 120, paidBy: 'Ik', forMembers: ['Ik', 'Partner'] }
+                    ]
                 }
             ],
             activeGroupId: 1,
             folders: [
                 { id: 1, title: 'Facturen & Garanties', files: [] }
-            ]
+            ],
+            modules: { beleggingen: false }
         };
 
         let state = initialState;
-
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        }
-
-        function simulateSuccessfulPayment() {
-            localStorage.setItem('LIFE_USER_PAID', 'true');
-        }
-
-        function bypassPaywallForTesting() {
-            localStorage.setItem('LIFE_USER_PAID', 'true');
-            location.reload();
-        }
-
-        function lockAppAgain() {
-            localStorage.removeItem('LIFE_USER_PAID');
-            location.reload();
-        }
 
         function loadData() {
             const saved = localStorage.getItem(STORAGE_KEY);
@@ -539,6 +459,7 @@
             if(!state.expenseGroups) state.expenseGroups = [];
             if(!state.activeGroupId && state.expenseGroups.length > 0) state.activeGroupId = state.expenseGroups[0].id;
             
+            applyModules();
             renderAll();
         }
 
@@ -550,15 +471,14 @@
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' });
 
         function switchTab(tabId) {
-            document.querySelectorAll('#main-nav-pc button').forEach(b => {
-                b.className = "w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left text-sm";
+            document.querySelectorAll('#main-nav button').forEach(b => {
+                b.className = "w-full flex items-center space-x-3 px-3 py-2.5 text-app-muted hover:bg-slate-50 hover:text-app-text font-medium rounded-xl transition text-left";
             });
-            const pcBtn = document.getElementById(`nav-pc-${tabId}`);
-            if (pcBtn) pcBtn.className = "w-full flex items-center space-x-3 px-3 py-2.5 bg-app-primary text-white font-medium rounded-xl transition text-left text-sm";
-
-            const titles = { 'vandaag': 'Vandaag', 'taken': 'Agenda & Taken', 'gewoonte': 'Gewoontes & Doelen', 'boodschappen': 'Boodschappen & Lijsten', 'financien': 'Geld & Budget', 'documenten': 'Mappen & Papieren' };
-            document.getElementById('page-title').innerText = titles[tabId] || 'Dashboard';
-
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) {
+                activeBtn.className = "w-full flex items-center space-x-3 px-3 py-2.5 bg-app-primary text-white font-medium rounded-xl transition text-left";
+                document.getElementById('page-title').innerText = activeBtn.querySelector('span').innerText;
+            }
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
             const panel = document.getElementById(`tab-${tabId}`);
             if (panel) panel.classList.add('active');
@@ -572,21 +492,43 @@
             }
         }
 
-        function openBulkTaskModal() { document.getElementById('bulk-task-modal').classList.remove('hidden'); }
-        function closeBulkTaskModal() { document.getElementById('bulk-task-modal').classList.add('hidden'); document.getElementById('bulk-task-input').value = ''; }
+        /* BULK TAKEN LOGICA */
+        function openBulkTaskModal() {
+            document.getElementById('bulk-task-modal').classList.remove('hidden');
+        }
+
+        function closeBulkTaskModal() {
+            document.getElementById('bulk-task-modal').classList.add('hidden');
+            document.getElementById('bulk-task-input').value = '';
+        }
 
         function saveBulkTasks() {
             const text = document.getElementById('bulk-task-input').value;
             if(!text.trim()) return;
-            text.split('\n').forEach((line, index) => {
+
+            const lines = text.split('\n');
+            let addedCount = 0;
+
+            lines.forEach((line, index) => {
                 const cleaned = line.trim();
-                if(cleaned) state.tasks.push({ id: Date.now() + index, title: cleaned, completed: false });
+                if(cleaned) {
+                    state.tasks.push({
+                        id: Date.now() + index,
+                        title: cleaned,
+                        completed: false
+                    });
+                    addedCount++;
+                }
             });
-            saveData();
+
+            if(addedCount > 0) {
+                saveData();
+            }
             closeBulkTaskModal();
         }
 
         function renderAll() {
+            // Stats
             document.getElementById('dash-open-tasks').innerText = state.tasks.filter(t => !t.completed).length;
             document.getElementById('dash-completed-habits').innerText = `${state.habits.filter(h => h.current >= h.target).length} / ${state.habits.length}`;
             
@@ -597,290 +539,426 @@
             document.getElementById('fin-expenses').innerText = `€ ${totalFixed}`;
             document.getElementById('fin-remaining').innerText = `€ ${remaining}`;
 
+            // Calories Widget Top Dash & Boodschappen
             const calText = `${state.calories.current} / ${state.calories.target}`;
             const calPct = Math.min(100, Math.round((state.calories.current / state.calories.target) * 100));
+            
             document.getElementById('dash-calories-text').innerText = calText;
             document.getElementById('dash-calories-bar').style.width = `${calPct}%`;
+            
             document.getElementById('boodschap-cal-text').innerText = `${calText} kcal`;
             document.getElementById('boodschap-cal-bar').style.width = `${calPct}%`;
 
             renderCalorieLogs();
 
+            // Vandaag & Tasks List
             const vTasks = document.getElementById('vandaag-tasks-list');
             const fTasks = document.getElementById('full-tasks-list');
             
             vTasks.innerHTML = state.tasks.filter(t => !t.completed).slice(0, 4).map(t => `
-                <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-app-border text-xs">
-                    <span class="font-medium text-app-text truncate mr-2">${t.title}</span>
-                    <button onclick="toggleTask(${t.id})" class="text-app-primary font-semibold shrink-0">Vink af</button>
+                <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-app-border">
+                    <span class="text-xs font-medium text-app-text">${t.title}</span>
+                    <button onclick="toggleTask(${t.id})" class="text-xs text-app-primary font-semibold">Vink af</button>
                 </div>
             `).join('') || '<p class="text-xs text-app-muted">Geen openstaande taken!</p>';
 
             fTasks.innerHTML = state.tasks.map(t => `
-                <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-app-border text-xs">
-                    <div class="flex items-center space-x-2 truncate mr-2">
-                        <input type="checkbox" ${t.completed ? 'checked' : ''} onclick="toggleTask(${t.id})" class="rounded text-app-primary shrink-0">
-                        <span class="font-medium truncate ${t.completed ? 'line-through text-app-muted' : 'text-app-text'}">${t.title}</span>
+                <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-app-border">
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" ${t.completed ? 'checked' : ''} onclick="toggleTask(${t.id})" class="rounded text-app-primary">
+                        <span class="text-xs font-medium ${t.completed ? 'line-through text-app-muted' : 'text-app-text'}">${t.title}</span>
                     </div>
-                    <button onclick="deleteTask(${t.id})" class="text-app-muted hover:text-app-danger shrink-0"><i class="fa-solid fa-trash-can"></i></button>
+                    <button onclick="deleteTask(${t.id})" class="text-xs text-app-muted hover:text-app-danger"><i class="fa-solid fa-trash-can"></i></button>
                 </div>
             `).join('') || '<p class="text-xs text-app-muted">Geen taken.</p>';
 
             renderHabits();
             renderCalendar();
 
+            // Groceries
             const gList = document.getElementById('full-groceries-list');
             gList.innerHTML = state.groceries.map(g => `
-                <div class="flex items-center justify-between p-2 bg-slate-50 rounded-xl border border-app-border text-xs">
-                    <label class="flex items-center space-x-2 cursor-pointer truncate mr-2">
-                        <input type="checkbox" ${g.checked ? 'checked' : ''} onclick="toggleGrocery(${g.id})" class="rounded text-app-primary shrink-0">
-                        <span class="font-medium truncate ${g.checked ? 'line-through text-app-muted' : 'text-app-text'}">${g.title}</span>
+                <div class="flex items-center justify-between p-2 bg-slate-50 rounded-xl border border-app-border">
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="checkbox" ${g.checked ? 'checked' : ''} onclick="toggleGrocery(${g.id})" class="rounded text-app-primary">
+                        <span class="text-xs font-medium ${g.checked ? 'line-through text-app-muted' : 'text-app-text'}">${g.title}</span>
                     </label>
-                    <div class="flex items-center space-x-2 shrink-0">
-                        ${g.calories ? `<button onclick="logCalorieDirect('${g.title}', ${g.calories})" class="text-[10px] bg-red-50 hover:bg-red-100 text-app-danger px-2 py-0.5 rounded font-bold">+ ${g.calories} kcal</button>` : ''}
-                        <button onclick="deleteGrocery(${g.id})" class="text-app-muted hover:text-app-danger"><i class="fa-solid fa-xmark"></i></button>
+                    <div class="flex items-center space-x-2">
+                        ${g.calories ? `<button onclick="logCalorieDirect('${g.title}', ${g.calories})" class="text-[10px] bg-red-50 hover:bg-red-100 text-app-danger px-2 py-0.5 rounded font-bold transition">+ ${g.calories} kcal eten</button>` : ''}
+                        <button onclick="deleteGrocery(${g.id})" class="text-xs text-app-muted hover:text-app-danger"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                 </div>
             `).join('') || '<p class="text-xs text-app-muted">Boodschappenlijst is leeg.</p>';
 
+            // Recipes
             const rList = document.getElementById('recipes-list');
             rList.innerHTML = state.recipes.map(r => `
-                <div class="p-2.5 bg-slate-50 rounded-xl border border-app-border space-y-2 text-xs">
+                <div class="p-3 bg-slate-50 rounded-xl border border-app-border space-y-2">
                     <div class="flex justify-between items-center">
-                        <div class="truncate mr-2">
-                            <span class="font-bold text-app-text truncate">${r.title}</span>
-                            ${r.calories ? `<span class="ml-1 text-[10px] bg-red-100 text-app-danger font-bold px-1.5 py-0.5 rounded-full">${r.calories} kcal</span>` : ''}
+                        <div>
+                            <span class="text-xs font-bold text-app-text">${r.title}</span>
+                            ${r.calories ? `<span class="ml-2 text-[10px] bg-red-100 text-app-danger font-bold px-1.5 py-0.5 rounded-full">${r.calories} kcal</span>` : ''}
                         </div>
-                        <div class="flex items-center space-x-1 shrink-0">
-                            <button onclick="logRecipeCalories(${r.id})" class="bg-emerald-600 text-white px-2 py-1 rounded-lg font-medium">+ Eten</button>
-                            <button onclick="addRecipeToGroceries(${r.id})" class="bg-app-primary text-white px-2 py-1 rounded-lg font-medium">+ Lijst</button>
-                            <button onclick="deleteRecipe(${r.id})" class="text-app-muted hover:text-app-danger pl-1"><i class="fa-solid fa-trash-can"></i></button>
+                        <div class="flex items-center space-x-1">
+                            <button onclick="logRecipeCalories(${r.id})" class="text-[11px] bg-emerald-600 text-white px-2 py-1 rounded-lg font-medium hover:bg-emerald-700" title="Voeg toe aan calorie tracker">+ Eten</button>
+                            <button onclick="addRecipeToGroceries(${r.id})" class="text-[11px] bg-app-primary text-white px-2 py-1 rounded-lg font-medium">+ Lijst</button>
+                            <button onclick="deleteRecipe(${r.id})" class="text-xs text-app-muted hover:text-app-danger pl-1"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
+                    <div class="text-[11px] text-app-muted">
+                        ${Array.isArray(r.ingredients) ? r.ingredients.map(i => typeof i === 'object' ? `${i.name} (${i.kcal || 0} kcal)` : i).join(', ') : ''}
+                    </div>
                 </div>
-            `).join('') || '<p class="text-xs text-app-muted">Geen recepten.</p>';
+            `).join('') || '<p class="text-xs text-app-muted">Nog geen recepten toegevoegd.</p>';
 
+            // Custom Lists
             const cList = document.getElementById('custom-lists-container');
             cList.innerHTML = state.customLists.map(l => {
                 const totalSpent = l.items.reduce((acc, item) => acc + (item.checked ? Number(item.cost || 0) : 0), 0);
                 return `
-                    <div class="p-3.5 bg-slate-50 rounded-2xl border border-app-border space-y-2 text-xs">
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-app-border space-y-3">
                         <div class="flex justify-between items-center border-b pb-2">
-                            <span class="font-bold text-app-text">${l.title}</span>
+                            <span class="font-bold text-xs text-app-text">${l.title}</span>
                             <div class="flex items-center space-x-2">
-                                <span class="font-bold text-app-success">€ ${totalSpent}</span>
-                                <button onclick="deleteCustomList(${l.id})" class="text-app-muted hover:text-app-danger"><i class="fa-solid fa-trash-can"></i></button>
+                                <span class="text-xs font-bold text-app-success">Totaal: € ${totalSpent}</span>
+                                <button onclick="deleteCustomList(${l.id})" class="text-xs text-app-muted hover:text-app-danger"><i class="fa-solid fa-trash-can"></i></button>
                             </div>
                         </div>
-                        <div class="space-y-1">
+                        <div class="space-y-1.5">
                             ${l.items.map((item, idx) => `
-                                <div class="flex items-center justify-between">
-                                    <label class="flex items-center space-x-2 truncate mr-2">
-                                        <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleCustomListItem(${l.id}, ${idx})" class="rounded shrink-0">
-                                        <span class="truncate ${item.checked ? 'line-through text-app-muted' : 'text-app-text'}">${item.title}</span>
+                                <div class="flex items-center justify-between text-xs">
+                                    <label class="flex items-center space-x-2">
+                                        <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleCustomListItem(${l.id}, ${idx})" class="rounded">
+                                        <span class="${item.checked ? 'line-through text-app-muted' : 'text-app-text'}">${item.title}</span>
                                     </label>
-                                    <span class="text-app-muted shrink-0">€ ${item.cost || 0}</span>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-app-muted font-medium">€ ${item.cost || 0}</span>
+                                        <button onclick="deleteCustomListItem(${l.id}, ${idx})" class="text-app-muted hover:text-app-danger"><i class="fa-solid fa-xmark"></i></button>
+                                    </div>
                                 </div>
                             `).join('')}
                         </div>
-                        <button onclick="promptAddItemToCustomList(${l.id})" class="text-app-primary font-medium pt-1">+ Item</button>
+                        <button onclick="promptAddItemToCustomList(${l.id})" class="text-xs text-app-primary font-medium">+ Item toevoegen</button>
                     </div>
                 `;
-            }).join('');
+            }).join('') || '<p class="text-xs text-app-muted col-span-2">Geen speciale lijsten.</p>';
 
             renderExpenseGroups();
 
+            // Fixed Costs
             const fcList = document.getElementById('fixed-costs-list');
             fcList.innerHTML = state.fixedCosts.map(c => `
                 <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl border border-app-border text-xs">
-                    <span class="font-medium text-app-text truncate mr-2">${c.title}</span>
-                    <div class="flex items-center space-x-3 shrink-0">
+                    <span class="font-medium text-app-text">${c.title}</span>
+                    <div class="flex items-center space-x-3">
                         <span class="font-bold text-app-danger">€ ${c.amount}</span>
                         <button onclick="deleteFixedCost(${c.id})" class="text-app-muted hover:text-app-danger"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                 </div>
-            `).join('');
+            `).join('') || '<p class="text-xs text-app-muted">Geen vaste lasten.</p>';
 
+            // Folders
             const fContainer = document.getElementById('folders-container');
             fContainer.innerHTML = state.folders.map(f => `
-                <div class="p-3.5 bg-slate-50 rounded-2xl border border-app-border space-y-2 text-xs">
+                <div class="p-4 bg-slate-50 rounded-2xl border border-app-border space-y-3">
                     <div class="flex justify-between items-center border-b pb-2">
-                        <span class="font-bold text-app-text"><i class="fa-solid fa-folder text-app-warning mr-2"></i>${f.title}</span>
-                        <button onclick="promptUploadFile(${f.id})" class="bg-white border border-app-border px-2 py-1 rounded-lg">+ Document</button>
+                        <span class="font-bold text-xs text-app-text"><i class="fa-solid fa-folder text-app-warning mr-2"></i>${f.title}</span>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="promptUploadFile(${f.id})" class="text-xs bg-white border border-app-border px-2.5 py-1 rounded-lg hover:bg-slate-100">+ Document</button>
+                            <button onclick="deleteFolder(${f.id})" class="text-xs text-app-muted hover:text-app-danger"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         ${f.files.map((file, idx) => `
-                            <div class="p-2 bg-white rounded-xl border border-app-border flex justify-between items-center">
-                                <span class="font-medium text-app-text truncate mr-2">${file.name}</span>
-                                <button onclick="deleteFileFromFolder(${f.id}, ${idx})" class="text-app-muted hover:text-app-danger shrink-0"><i class="fa-solid fa-xmark"></i></button>
+                            <div class="p-2 bg-white rounded-xl border border-app-border text-xs flex justify-between items-center">
+                                <div>
+                                    <span class="font-medium text-app-text block truncate">${file.name}</span>
+                                    <span class="text-[10px] text-app-muted">${file.date}</span>
+                                </div>
+                                <button onclick="deleteFileFromFolder(${f.id}, ${idx})" class="text-app-muted hover:text-app-danger ml-2"><i class="fa-solid fa-xmark"></i></button>
                             </div>
-                        `).join('')}
+                        `).join('') || '<p class="text-xs text-app-muted col-span-2">Lege map</p>'}
                     </div>
                 </div>
             `).join('');
         }
 
+        // CALORIES MANAGEMENT
         function promptSetCalorieTarget() {
-            const target = prompt("Caloriedoel (kcal):", state.calories.target);
-            if(target) { state.calories.target = Number(target); saveData(); }
+            const target = prompt("Stel je dagelijkse caloriedoel in (kcal):", state.calories.target);
+            if(target) {
+                state.calories.target = Number(target);
+                saveData();
+            }
         }
+
         function promptAddCalorieLog() {
             const title = prompt("Wat heb je gegeten?");
             if(!title) return;
             const kcal = prompt("Hoeveel kcal?");
-            if(kcal) logCalorieDirect(title, Number(kcal));
+            if(kcal) {
+                logCalorieDirect(title, Number(kcal));
+            }
         }
+
         function logCalorieDirect(title, kcal) {
-            state.calories.logs.push({ id: Date.now(), title, calories: Number(kcal) });
+            const logItem = { id: Date.now(), title, calories: Number(kcal) };
+            state.calories.logs.push(logItem);
             state.calories.current += Number(kcal);
             saveData();
         }
-        function deleteCalorieLog(id) {
-            const idx = state.calories.logs.findIndex(l => l.id === id);
-            if (idx !== -1) {
-                state.calories.current = Math.max(0, state.calories.current - state.calories.logs[idx].calories);
-                state.calories.logs.splice(idx, 1);
+
+        function deleteCalorieLog(logId) {
+            const logIdx = state.calories.logs.findIndex(l => l.id === logId);
+            if (logIdx !== -1) {
+                const removed = state.calories.logs.splice(logIdx, 1)[0];
+                state.calories.current = Math.max(0, state.calories.current - removed.calories);
                 saveData();
             }
         }
+
         function renderCalorieLogs() {
             const container = document.getElementById('calorie-logs-list');
             if(!state.calories.logs || state.calories.logs.length === 0) {
-                container.innerHTML = `<span class="text-xs text-app-muted italic">Nog niks gelogd.</span>`;
+                container.innerHTML = `<span class="text-xs text-app-muted italic">Nog geen maaltijden gelogd vandaag.</span>`;
                 return;
             }
+
             container.innerHTML = state.calories.logs.map(l => `
-                <span class="inline-flex items-center space-x-1.5 px-2 py-0.5 bg-red-50 border border-red-100 rounded-lg text-xs font-semibold text-app-text">
-                    <span class="truncate max-w-[100px]">${l.title}</span>
+                <span class="inline-flex items-center space-x-1.5 px-2.5 py-1 bg-red-50 border border-red-100 rounded-lg text-xs font-semibold text-app-text">
+                    <span>${l.title}</span>
                     <span class="text-app-danger">(${l.calories} kcal)</span>
-                    <button onclick="deleteCalorieLog(${l.id})" class="text-app-muted hover:text-app-danger"><i class="fa-solid fa-xmark"></i></button>
+                    <button onclick="deleteCalorieLog(${l.id})" class="text-app-muted hover:text-app-danger ml-1" title="Verwijderen">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                 </span>
             `).join('');
         }
-        function logRecipeCalories(id) {
-            const r = state.recipes.find(x => x.id === id);
-            if(r && r.calories) logCalorieDirect(r.title, r.calories);
+
+        function logRecipeCalories(recipeId) {
+            const r = state.recipes.find(x => x.id === recipeId);
+            if(r && r.calories) {
+                logCalorieDirect(r.title, r.calories);
+            } else {
+                alert("Dit recept heeft geen totale calorieën ingesteld.");
+            }
         }
 
+        // EXPENSE GROUPS LOGIC
         function promptCreateGroup() {
-            const name = prompt("Groepsnaam:");
+            const name = prompt("Naam van de groep (bijv. Samen Wonen, Reis Spanje):");
             if(!name) return;
-            const membersStr = prompt("Leden (komma-gescheiden):", "Ik, Partner");
+            const membersStr = prompt("Namen van de leden in de groep (gescheiden door komma's):", "Ik, Partner");
             if(membersStr) {
-                const members = membersStr.split(',').map(m => m.trim()).filter(m => m);
-                const newGroup = { id: Date.now(), name, members, expenses: [] };
+                const members = membersStr.split(',').map(m => m.trim()).filter(m => m.length > 0);
+                const newGroup = {
+                    id: Date.now(),
+                    name,
+                    members,
+                    expenses: []
+                };
                 state.expenseGroups.push(newGroup);
                 state.activeGroupId = newGroup.id;
                 saveData();
             }
         }
-        function switchExpenseGroup(id) { state.activeGroupId = id; saveData(); }
-        function promptAddExpenseToGroup() {
-            if(!state.activeGroupId) return alert("Maak eerst een groep aan.");
-            const g = state.expenseGroups.find(x => x.id === state.activeGroupId);
-            const title = prompt("Omschrijving uitgave:");
-            const amount = prompt("Bedrag (€):");
-            const paidBy = prompt(`Betaald door? (${g.members.join(', ')})`, g.members[0]);
-            if(title && amount && paidBy) {
-                g.expenses.push({ id: Date.now(), title, amount: Number(amount), paidBy, forMembers: [...g.members] });
-                saveData();
+
+        function switchExpenseGroup(groupId) {
+            state.activeGroupId = groupId;
+            saveData();
+        }
+
+        function promptAddMemberToGroup(groupId) {
+            const g = state.expenseGroups.find(x => x.id === groupId);
+            if(g) {
+                const name = prompt("Naam van nieuw lid:");
+                if(name && !g.members.includes(name.trim())) {
+                    g.members.push(name.trim());
+                    saveData();
+                }
             }
         }
+
+        function promptAddExpenseToGroup() {
+            if(!state.activeGroupId || state.expenseGroups.length === 0) {
+                alert("Maak eerst een groep aan!");
+                return;
+            }
+            const g = state.expenseGroups.find(x => x.id === state.activeGroupId);
+            if(!g) return;
+
+            const title = prompt("Omschrijving van de uitgave:");
+            if(!title) return;
+            const amount = prompt("Bedrag (€):");
+            if(!amount) return;
+
+            const paidBy = prompt(`Wie heeft dit betaald?\nKies uit: ${g.members.join(', ')}`, g.members[0]);
+            if(!g.members.includes(paidBy)) {
+                alert("Lid niet gevonden in de groep!");
+                return;
+            }
+
+            state.expenseGroups.find(x => x.id === state.activeGroupId).expenses.push({
+                id: Date.now(),
+                title,
+                amount: Number(amount),
+                paidBy,
+                forMembers: [...g.members]
+            });
+            saveData();
+        }
+
         function deleteGroupExpense(groupId, expId) {
             const g = state.expenseGroups.find(x => x.id === groupId);
-            if(g) { g.expenses = g.expenses.filter(e => e.id !== expId); saveData(); }
-        }
-        function deleteExpenseGroup(id) {
-            if(confirm("Groep verwijderen?")) {
-                state.expenseGroups = state.expenseGroups.filter(g => g.id !== id);
-                state.activeGroupId = state.expenseGroups[0]?.id || null;
+            if(g) {
+                g.expenses = g.expenses.filter(e => e.id !== expId);
                 saveData();
             }
         }
+
+        function deleteExpenseGroup(groupId) {
+            if(confirm("Weet je zeker dat je deze hele groep wilt verwijderen?")) {
+                state.expenseGroups = state.expenseGroups.filter(g => g.id !== groupId);
+                if(state.expenseGroups.length > 0) {
+                    state.activeGroupId = state.expenseGroups[0].id;
+                } else {
+                    state.activeGroupId = null;
+                }
+                saveData();
+            }
+        }
+
         function renderExpenseGroups() {
             const selector = document.getElementById('group-selector-container');
             const details = document.getElementById('group-details-container');
+
             if(!state.expenseGroups || state.expenseGroups.length === 0) {
                 selector.innerHTML = '';
-                details.innerHTML = `<p class="text-xs text-app-muted">Geen actieve groepen.</p>`;
+                details.innerHTML = `<p class="text-xs text-app-muted py-4">Geen actieve groepen. Maak een groep aan om uitgaven eerlijk te verdelen.</p>`;
                 return;
             }
+
             selector.innerHTML = state.expenseGroups.map(g => `
-                <button onclick="switchExpenseGroup(${g.id})" class="px-3 py-1 rounded-xl text-xs font-semibold shrink-0 ${g.id === state.activeGroupId ? 'bg-app-primary text-white' : 'bg-slate-100 text-app-muted'}">${g.name}</button>
+                <button onclick="switchExpenseGroup(${g.id})" class="px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${g.id === state.activeGroupId ? 'bg-app-primary text-white' : 'bg-slate-100 text-app-muted hover:bg-slate-200'}">
+                    ${g.name}
+                </button>
             `).join('');
-            
+
             const activeGroup = state.expenseGroups.find(g => g.id === state.activeGroupId) || state.expenseGroups[0];
+
             const balances = {};
             activeGroup.members.forEach(m => balances[m] = 0);
+
             activeGroup.expenses.forEach(e => {
-                const split = e.amount / activeGroup.members.length;
-                if(balances[e.paidBy] !== undefined) balances[e.paidBy] += e.amount;
-                activeGroup.members.forEach(m => balances[m] -= split);
+                const paidBy = e.paidBy;
+                const cost = Number(e.amount);
+                const targets = e.forMembers && e.forMembers.length > 0 ? e.forMembers : activeGroup.members;
+                const splitCost = cost / targets.length;
+
+                if(balances[paidBy] !== undefined) balances[paidBy] += cost;
+
+                targets.forEach(m => {
+                    if(balances[m] !== undefined) balances[m] -= splitCost;
+                });
             });
-            
+
+            const totalGroupSpent = activeGroup.expenses.reduce((a, b) => a + Number(b.amount), 0);
+
             details.innerHTML = `
-                <div class="bg-slate-50 p-3.5 rounded-2xl border border-app-border space-y-3 text-xs">
+                <div class="bg-slate-50 p-4 rounded-2xl border border-app-border space-y-3">
                     <div class="flex justify-between items-center border-b pb-2">
-                        <span class="font-bold text-xs text-app-text">${activeGroup.name}</span>
-                        <button onclick="deleteExpenseGroup(${activeGroup.id})" class="text-app-muted hover:text-app-danger"><i class="fa-solid fa-trash-can"></i></button>
+                        <div>
+                            <span class="font-bold text-sm text-app-text">${activeGroup.name}</span>
+                            <span class="text-xs text-app-muted ml-2">(Leden: ${activeGroup.members.join(', ')})</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs font-bold text-app-primary">Totaal: € ${totalGroupSpent}</span>
+                            <button onclick="promptAddMemberToGroup(${activeGroup.id})" class="text-[11px] bg-white border border-app-border px-2 py-0.5 rounded-lg hover:bg-slate-100">+ Lid</button>
+                            <button onclick="deleteExpenseGroup(${activeGroup.id})" class="text-xs text-app-muted hover:text-app-danger ml-2"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        ${activeGroup.members.map(m => `
-                            <div class="p-2 bg-white rounded-xl border border-app-border flex justify-between items-center">
-                                <span class="font-semibold text-app-text truncate mr-1">${m}</span>
-                                <span class="font-bold ${(balances[m]||0) >= 0 ? 'text-app-success' : 'text-app-danger'} shrink-0">€ ${(balances[m]||0).toFixed(2)}</span>
-                            </div>
-                        `).join('')}
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                        ${activeGroup.members.map(m => {
+                            const bal = balances[m] || 0;
+                            const isPositive = bal >= 0;
+                            return `
+                                <div class="p-2.5 bg-white rounded-xl border border-app-border flex justify-between items-center text-xs">
+                                    <span class="font-semibold text-app-text">${m}</span>
+                                    <span class="font-bold ${isPositive ? 'text-app-success' : 'text-app-danger'}">
+                                        ${isPositive ? 'krijgt € ' + bal.toFixed(2) : 'moet betalen € ' + Math.abs(bal).toFixed(2)}
+                                    </span>
+                                </div>
+                            `;
+                        }).join('')}
                     </div>
-                    <div class="space-y-1">
+
+                    <div class="space-y-2 pt-2">
+                        <span class="text-xs font-semibold text-app-muted block">Ingestuurde uitgaven:</span>
                         ${activeGroup.expenses.map(e => `
-                            <div class="flex justify-between items-center p-2 bg-white rounded-xl border border-app-border">
-                                <span class="truncate mr-2"><b>${e.title}</b> (${e.paidBy})</span>
-                                <div class="flex items-center space-x-2 shrink-0">
-                                    <span class="font-bold">€ ${e.amount}</span>
+                            <div class="flex items-center justify-between p-2.5 bg-white rounded-xl border border-app-border text-xs">
+                                <div>
+                                    <span class="font-bold text-app-text">${e.title}</span>
+                                    <span class="text-app-muted ml-2">(Betaald door ${e.paidBy})</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="font-bold text-app-text">€ ${e.amount}</span>
                                     <button onclick="deleteGroupExpense(${activeGroup.id}, ${e.id})" class="text-app-muted hover:text-app-danger"><i class="fa-solid fa-xmark"></i></button>
                                 </div>
                             </div>
-                        `).join('')}
+                        `).join('') || '<p class="text-xs text-app-muted">Nog geen uitgaven toegevoegd aan deze groep.</p>'}
                     </div>
                 </div>
             `;
         }
 
+        // HABITS
         function renderHabits() {
             const container = document.getElementById('full-habits-list');
             const vContainer = document.getElementById('vandaag-habits-list');
+
             const html = state.habits.map(h => {
                 const pct = Math.min(100, Math.round((h.current / h.target) * 100));
                 return `
-                    <div class="p-3 bg-slate-50 rounded-xl border border-app-border space-y-2 text-xs">
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-app-text truncate mr-2">${h.title}</span>
-                            <span class="text-app-muted shrink-0 text-[11px]">${h.current} / ${h.target} ${h.unit}</span>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-app-border space-y-2">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="font-bold text-app-text">${h.title}</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-medium text-app-muted">${h.current} / ${h.target} ${h.unit} (${pct}%)</span>
+                                <button onclick="deleteHabit(${h.id})" class="text-app-muted hover:text-app-danger"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
                         </div>
                         <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                            <div class="bg-app-primary h-full" style="width: ${pct}%"></div>
+                            <div class="bg-app-primary h-full transition-all" style="width: ${pct}%"></div>
                         </div>
-                        <div class="flex space-x-2">
-                            <button onclick="addHabitProgress(${h.id}, 250)" class="bg-white border px-2 py-0.5 rounded-lg text-xs">+250</button>
-                            <button onclick="addHabitProgress(${h.id}, 1000)" class="bg-white border px-2 py-0.5 rounded-lg text-xs">+1000</button>
-                            <button onclick="resetHabit(${h.id})" class="text-app-muted ml-auto text-xs">Reset</button>
+                        <div class="flex space-x-2 pt-1">
+                            <button onclick="addHabitProgress(${h.id}, 100)" class="text-[11px] bg-white border px-2 py-0.5 rounded-lg hover:bg-slate-100">+100</button>
+                            <button onclick="addHabitProgress(${h.id}, 500)" class="text-[11px] bg-white border px-2 py-0.5 rounded-lg hover:bg-slate-100">+500</button>
+                            <button onclick="addHabitProgress(${h.id}, 1000)" class="text-[11px] bg-white border px-2 py-0.5 rounded-lg hover:bg-slate-100">+1000</button>
+                            <button onclick="resetHabit(${h.id})" class="text-[11px] text-app-muted hover:text-app-danger ml-auto">Reset</button>
                         </div>
                     </div>
                 `;
-            }).join('');
+            }).join('') || '<p class="text-xs text-app-muted">Geen gewoontes.</p>';
+
             container.innerHTML = html;
             vContainer.innerHTML = html;
         }
-        function addHabitProgress(id, val) { const h = state.habits.find(x => x.id === id); if(h) { h.current += val; saveData(); } }
-        function resetHabit(id) { const h = state.habits.find(x => x.id === id); if(h) { h.current = 0; saveData(); } }
+
+        function addHabitProgress(id, val) { const h = state.habits.find(x => x.id === id); if (h) { h.current += val; saveData(); } }
+        function resetHabit(id) { const h = state.habits.find(x => x.id === id); if (h) { h.current = 0; saveData(); } }
+        function deleteHabit(id) { state.habits = state.habits.filter(x => x.id !== id); saveData(); }
         function promptAddAdvancedHabit() {
-            const title = prompt("Gewoonte naam:");
-            const target = prompt("Doel:");
+            const title = prompt("Naam gewoonte (bijv. Water drinken):");
+            const target = prompt("Doel hoeveelheid (bijv. 2000):");
             const unit = prompt("Eenheid (bijv. ml, stappen):");
-            if(title && target) { state.habits.push({ id: Date.now(), title, target: Number(target), current: 0, unit: unit || '' }); saveData(); }
+            if (title && target) {
+                state.habits.push({ id: Date.now(), title, target: Number(target), current: 0, unit: unit || '' });
+                saveData();
+            }
         }
 
+        // CALENDAR
         function renderCalendar() {
             const container = document.getElementById('calendar-grid');
             let html = '';
@@ -889,12 +967,15 @@
                 html += `<div class="grid grid-cols-8 gap-1 text-xs items-center py-1 border-b border-slate-100">
                     <div class="text-app-muted text-center font-mono text-[10px]">${timeStr}</div>`;
                 for (let day = 0; day < 7; day++) {
-                    const events = state.calendarEvents.filter(e => e.day === day && parseInt(e.time?.split(':')[0] || 0) === hour);
-                    html += `<div class="bg-slate-50 min-h-[30px] rounded-lg p-0.5 border text-[10px] space-y-0.5">
+                    const events = state.calendarEvents.filter(e => {
+                        const eventHour = e.time ? parseInt(e.time.split(':')[0], 10) : e.hour;
+                        return e.day === day && eventHour === hour;
+                    });
+                    html += `<div class="bg-slate-50 min-h-[32px] rounded-lg p-1 border border-slate-100 text-[10px] space-y-1">
                         ${events.map(e => `
-                            <div class="bg-blue-100 text-app-primary font-semibold p-1 rounded flex justify-between items-center">
-                                <span class="truncate">${e.time ? '<b>' + e.time + '</b> ' : ''}${e.title}</span>
-                                <button onclick="deleteCalendarEvent(${e.id})" class="text-app-danger ml-1"><i class="fa-solid fa-xmark"></i></button>
+                            <div class="bg-blue-100 text-app-primary font-semibold p-1 rounded flex justify-between items-center group">
+                                <span class="truncate" title="${e.time ? e.time + ' ' : ''}${e.title}">${e.time ? '<span class="font-bold mr-0.5">' + e.time + '</span> ' : ''}${e.title}</span>
+                                <button onclick="deleteCalendarEvent(${e.id})" class="text-app-danger opacity-75 hover:opacity-100 ml-1 shrink-0"><i class="fa-solid fa-xmark"></i></button>
                             </div>
                         `).join('')}
                     </div>`;
@@ -903,96 +984,165 @@
             }
             container.innerHTML = html;
         }
+
         function openAddEventModal() { document.getElementById('event-modal').classList.remove('hidden'); }
         function closeEventModal() { document.getElementById('event-modal').classList.add('hidden'); }
+        
         function saveCalendarEvent() {
             const title = document.getElementById('event-title-input').value.trim();
             const day = Number(document.getElementById('event-day-select').value);
-            const time = document.getElementById('event-time-input').value;
-            if(title && time) {
-                state.calendarEvents.push({ id: Date.now(), title, day, time });
+            const timeVal = document.getElementById('event-time-input').value; // e.g. "15:45"
+
+            if (title && timeVal) {
+                const hour = parseInt(timeVal.split(':')[0], 10);
+                state.calendarEvents.push({ id: Date.now(), title, day, time: timeVal, hour });
+                document.getElementById('event-title-input').value = '';
                 closeEventModal();
                 saveData();
             }
         }
+
         function deleteCalendarEvent(id) { state.calendarEvents = state.calendarEvents.filter(e => e.id !== id); saveData(); }
 
+        // GROCERIES & RECIPES
         function addGrocery() {
             const input = document.getElementById('grocery-input');
             const calInput = document.getElementById('grocery-calories-input');
             if(!input.value.trim()) return;
-            state.groceries.push({ id: Date.now(), title: input.value.trim(), calories: calInput.value ? Number(calInput.value) : null, checked: false });
-            input.value = ''; calInput.value = '';
+            state.groceries.push({ 
+                id: Date.now(), 
+                title: input.value.trim(), 
+                calories: calInput.value ? Number(calInput.value) : null,
+                checked: false 
+            });
+            input.value = '';
+            calInput.value = '';
             saveData();
         }
         function toggleGrocery(id) { const g = state.groceries.find(x => x.id === id); if(g) g.checked = !g.checked; saveData(); }
         function deleteGrocery(id) { state.groceries = state.groceries.filter(g => g.id !== id); saveData(); }
         function clearCheckedGroceries() { state.groceries = state.groceries.filter(g => !g.checked); saveData(); }
-
+        
         function promptAddRecipe() {
-            const title = prompt("Recept naam:");
-            const kcal = prompt("Totaal calorieën:");
-            if(title) { state.recipes.push({ id: Date.now(), title, calories: kcal ? Number(kcal) : null, ingredients: [] }); saveData(); }
+            const title = prompt("Naam van recept:");
+            if(!title) return;
+            const totalKcal = prompt("Totaal aantal calorieën voor dit recept (optioneel):");
+            const ingStr = prompt("Ingrediënten met optioneel kcal (bijv: Kip 200g - 220 kcal, Rijst 150g - 190 kcal):");
+            
+            if(ingStr) {
+                const ingredients = ingStr.split(',').map(s => {
+                    const parts = s.trim().split('-');
+                    const name = parts[0].trim();
+                    const kcal = parts[1] ? Number(parts[1].replace(/[^0-9]/g, '')) : null;
+                    return { name, kcal };
+                });
+                state.recipes.push({ 
+                    id: Date.now(), 
+                    title, 
+                    calories: totalKcal ? Number(totalKcal) : ingredients.reduce((a, b) => a + (b.kcal || 0), 0), 
+                    ingredients 
+                });
+                saveData();
+            }
         }
         function deleteRecipe(id) { state.recipes = state.recipes.filter(r => r.id !== id); saveData(); }
-        function addRecipeToGroceries(id) {
-            const r = state.recipes.find(x => x.id === id);
-            if(r) { state.groceries.push({ id: Date.now(), title: r.title, calories: r.calories, checked: false }); saveData(); alert("Toegevoegd aan boodschappen!"); }
+
+        function addRecipeToGroceries(recipeId) {
+            const r = state.recipes.find(x => x.id === recipeId);
+            if(r) {
+                r.ingredients.forEach(ing => {
+                    const title = typeof ing === 'object' ? ing.name : ing;
+                    const calories = typeof ing === 'object' ? ing.kcal : null;
+                    state.groceries.push({ id: Date.now() + Math.random(), title, calories, checked: false });
+                });
+                saveData();
+                alert("Ingrediënten toegevoegd aan je boodschappenlijst!");
+            }
         }
 
+        // CUSTOM LISTS
         function promptCreateCustomList() {
-            const title = prompt("Lijst naam:");
+            const title = prompt("Naam van de nieuwe lijst:");
             if(title) { state.customLists.push({ id: Date.now(), title, items: [] }); saveData(); }
         }
         function deleteCustomList(id) { state.customLists = state.customLists.filter(l => l.id !== id); saveData(); }
+
         function promptAddItemToCustomList(listId) {
             const l = state.customLists.find(x => x.id === listId);
-            const title = prompt("Item:");
-            const cost = prompt("Kosten (€):") || 0;
-            if(title) { l.items.push({ title, cost: Number(cost), checked: false }); saveData(); }
+            if(l) {
+                const title = prompt("Item naam:");
+                const cost = prompt("Kostprijs (€):") || 0;
+                if(title) { l.items.push({ title, cost: Number(cost), checked: false }); saveData(); }
+            }
         }
-        function toggleCustomListItem(listId, idx) {
+        function toggleCustomListItem(listId, itemIdx) {
             const l = state.customLists.find(x => x.id === listId);
-            if(l?.items[idx]) { l.items[idx].checked = !l.items[idx].checked; saveData(); }
+            if(l && l.items[itemIdx]) { l.items[itemIdx].checked = !l.items[itemIdx].checked; saveData(); }
+        }
+        function deleteCustomListItem(listId, itemIdx) {
+            const l = state.customLists.find(x => x.id === listId);
+            if(l) { l.items.splice(itemIdx, 1); saveData(); }
         }
 
+        // FINANCE
         function promptSetIncome() {
-            const val = prompt("Netto inkomen (€):", state.income);
+            const val = prompt("Netto maandinkomen (€):", state.income);
             if(val) { state.income = Number(val); saveData(); }
         }
         function promptAddFixedCost() {
-            const title = prompt("Vaste last:");
+            const title = prompt("Vaste last omschrijving:");
             const amount = prompt("Bedrag (€):");
             if(title && amount) { state.fixedCosts.push({ id: Date.now(), title, amount: Number(amount) }); saveData(); }
         }
         function deleteFixedCost(id) { state.fixedCosts = state.fixedCosts.filter(c => c.id !== id); saveData(); }
 
+        // FOLDERS
         function promptCreateFolder() {
-            const title = prompt("Map naam:");
+            const title = prompt("Naam van de map:");
             if(title) { state.folders.push({ id: Date.now(), title, files: [] }); saveData(); }
         }
+        function deleteFolder(id) { state.folders = state.folders.filter(f => f.id !== id); saveData(); }
+
         function promptUploadFile(folderId) {
             const f = state.folders.find(x => x.id === folderId);
-            const name = prompt("Bestand naam:");
-            if(name) { f.files.push({ name, date: new Date().toLocaleDateString('nl-NL') }); saveData(); }
+            if(f) {
+                const name = prompt("Bestand / Factuur omschrijving:");
+                if(name) { f.files.push({ name, date: new Date().toLocaleDateString('nl-NL') }); saveData(); }
+            }
         }
         function deleteFileFromFolder(folderId, fileIdx) {
             const f = state.folders.find(x => x.id === folderId);
             if(f) { f.files.splice(fileIdx, 1); saveData(); }
         }
 
+        // TASKS
         function toggleTask(id) { const t = state.tasks.find(x => x.id === id); if(t) t.completed = !t.completed; saveData(); }
         function deleteTask(id) { state.tasks = state.tasks.filter(x => x.id !== id); saveData(); }
+
+        // MODULES (Aangepast/verwijderd waar nodig)
+        function applyModules() {
+            let hasAny = false;
+            for (const [key, enabled] of Object.entries(state.modules)) {
+                const btn = document.getElementById(`nav-${key}`);
+                if (btn) {
+                    if (enabled) { btn.classList.remove('hidden'); hasAny = true; } else { btn.classList.add('hidden'); }
+                }
+            }
+            document.getElementById('optional-nav-group').classList.toggle('hidden', !hasAny);
+        }
 
         function exportBackup() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
             const a = document.createElement('a');
-            a.href = dataStr; a.download = "LIFE_APP_BACKUP.json"; a.click();
+            a.href = dataStr;
+            a.download = "LIFE_APP_BACKUP.json";
+            a.click();
         }
+
         function importBackupPrompt() {
             const input = prompt("Plak je backup code:");
             if (!input) return;
-            try { state = { ...initialState, ...JSON.parse(input) }; saveData(); } catch(e){ alert("Foutieve code."); }
+            try { state = { ...initialState, ...JSON.parse(input) }; saveData(); } catch(e){ alert("Ongeldige code."); }
         }
 
         loadData();
